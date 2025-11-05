@@ -22,6 +22,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { useAuth } from "@/lib/hooks/useAuth";
 
 // 🧠 1️⃣ Schema de validação com Zod
 const loginSchema = z.object({
@@ -32,7 +33,8 @@ const loginSchema = z.object({
 type LoginFormValues = z.infer<typeof loginSchema>;
 
 export default function LoginPage() {
-  // ⚙️ 2️⃣ Configurando React Hook Form + Zod
+  const { signIn } = useAuth();
+    // ⚙️ 2️⃣ Configurando React Hook Form + Zod
   const form = useForm<LoginFormValues>({
     resolver: zodResolver(loginSchema),
     defaultValues: {
@@ -42,8 +44,9 @@ export default function LoginPage() {
   });
 
   // 🧾 3️⃣ Handler de envio
-  function onSubmit(values: LoginFormValues) {
+  async function onSubmit(values: LoginFormValues) {
     console.log("Login data:", values);
+    console.log(await signIn(values.email, values.password));
     // Aqui você pode chamar sua API de autenticação
   }
 
