@@ -24,7 +24,6 @@ import {
 import { Input } from "@/components/ui/input";
 import { useAuth } from "@/lib/hooks/useAuth";
 
-// 🧠 1️⃣ Schema de validação com Zod
 const loginSchema = z.object({
   email: z.string().email("Digite um e-mail válido"),
   password: z.string().min(6, "A senha precisa ter pelo menos 6 caracteres"),
@@ -34,7 +33,6 @@ type LoginFormValues = z.infer<typeof loginSchema>;
 
 export default function LoginPage() {
   const { signIn } = useAuth();
-    // ⚙️ 2️⃣ Configurando React Hook Form + Zod
   const form = useForm<LoginFormValues>({
     resolver: zodResolver(loginSchema),
     defaultValues: {
@@ -43,14 +41,11 @@ export default function LoginPage() {
     },
   });
 
-  // 🧾 3️⃣ Handler de envio
   async function onSubmit(values: LoginFormValues) {
     console.log("Login data:", values);
     console.log(await signIn(values.email, values.password));
-    // Aqui você pode chamar sua API de autenticação
   }
 
-  // 💅 4️⃣ UI do form usando os componentes do Shadcn
   return (
     <div className="flex min-h-screen items-center justify-center bg-gray-50">
       <Card className="w-full max-w-sm p-6 shadow-lg border border-gray-200">
@@ -66,7 +61,6 @@ export default function LoginPage() {
         <CardContent>
           <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-              {/* Campo Email */}
               <FormField
                 control={form.control}
                 name="email"
@@ -85,7 +79,6 @@ export default function LoginPage() {
                 )}
               />
 
-              {/* Campo Senha */}
               <FormField
                 control={form.control}
                 name="password"
