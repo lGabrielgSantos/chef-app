@@ -5,7 +5,7 @@ import { useEffect } from "react";
 
 export default function DashboardPage() {
   const { user } = useAuthStore();
-useEffect(() => {
+  useEffect(() => {
     console.log("User in dashboard:", user);
   }, [user]);
   return (
