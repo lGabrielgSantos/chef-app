@@ -56,7 +56,9 @@ export default function Layout({
                         <BreadcrumbLink asChild>
                           <Link href={crumb.href}>{crumb.label}</Link>
                         </BreadcrumbLink>
-                        <BreadcrumbSeparator className="hidden md:block" />
+                        <BreadcrumbSeparator>
+                          <span className="hidden md:block">/</span>
+                        </BreadcrumbSeparator>
                       </>
                     ) : (
                       <BreadcrumbPage>{crumb.label}</BreadcrumbPage>

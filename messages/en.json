@@ -1,0 +1,12 @@
+{
+  "nav": {
+    "home": "Home",
+    "inbox": "Inbox",
+    "calendar": "Calendar",
+    "settings": "Settings"
+  },
+  "dashboard": {
+    "welcome": "Welcome to the dashboard",
+    "reports": "Reports"
+  }
+}

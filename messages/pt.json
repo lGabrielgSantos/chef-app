@@ -1,0 +1,12 @@
+{
+  "nav": {
+    "home": "Início",
+    "inbox": "Caixa de entrada",
+    "calendar": "Calendário",
+    "settings": "Configurações"
+  },
+  "dashboard": {
+    "welcome": "Bem-vindo ao painel",
+    "reports": "Relatórios"
+  }
+}
