@@ -1,5 +1,4 @@
 import { ReactNode } from "react";
-import { notFound } from "next/navigation";
 import { NextIntlClientProvider } from "next-intl";
 
 import pt from "@/messages/pt.json";
@@ -12,20 +11,14 @@ export default async function LocaleLayout(props: {
   const { children, params } = props;
   const { locale } = await params;
 
-  const messages =
-    locale === "pt" ? pt :
-    locale === "en" ? en :
-    null;
+  const currentLocale = locale === "en" ? "en" : "pt";
 
-  if (!messages) notFound();
+  const messages = currentLocale === "en" ? en : pt;
 
   return (
-    <html lang={locale}>
-      <body>
-        <NextIntlClientProvider locale={locale} messages={messages}>
-          {children}
-        </NextIntlClientProvider>
-      </body>
-    </html>
+
+    <NextIntlClientProvider locale={currentLocale} messages={messages}>
+      {children}
+    </NextIntlClientProvider>
   );
 }

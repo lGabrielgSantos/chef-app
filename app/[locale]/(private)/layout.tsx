@@ -24,8 +24,9 @@ export default function Layout({
   children: React.ReactNode
 }) {
   const pathname = usePathname()
+  const cleanedPath = pathname.replace(/^\/(pt|en)(?=\/|$)/, "")
 
-  const segments = pathname
+  const segments = cleanedPath
     .split("/")
     .filter((segment) => segment.length > 0)
 
