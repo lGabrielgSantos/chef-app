@@ -1,4 +1,14 @@
 {
+  "login": {
+    "title": "Faça login na sua conta",
+    "description": "Insira seu e-mail e senha abaixo para acessar sua conta.",
+    "username": "Nome de usuário",
+    "password": "Senha",
+    "submit": "Entrar",
+    "forgot_password": "Esqueceu sua senha?",
+    "create_account": "Não tem uma conta?",
+    "sign_up": "Inscrever-se"
+  },
   "nav": {
     "home": "Início",
     "inbox": "Caixa de entrada",

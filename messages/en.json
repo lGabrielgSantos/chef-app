@@ -1,4 +1,14 @@
 {
+  "login": {
+    "title": "Log In to Your Account",
+    "description": "Enter your email and password below to access your account.",
+    "username": "Username",
+    "password": "Password",
+    "submit": "Log In",
+    "forgot_password": "Forgot your password?",
+    "create_account": "Don’t have an account?",
+    "sign_up": "Sign Up"
+  },
   "nav": {
     "home": "Home",
     "inbox": "Inbox",

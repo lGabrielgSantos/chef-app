@@ -3,7 +3,7 @@
 import { z } from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-
+import { Spinner } from "@/components/ui/spinner"
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -23,6 +23,7 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { useAuth } from "@/lib/hooks/useAuth";
+import { useTranslations } from "next-intl";
 
 const loginSchema = z.object({
   email: z.string().email("Digite um e-mail válido"),
@@ -33,6 +34,7 @@ type LoginFormValues = z.infer<typeof loginSchema>;
 
 export default function LoginPage() {
   const { signIn } = useAuth();
+  const t = useTranslations('login');
   const form = useForm<LoginFormValues>({
     resolver: zodResolver(loginSchema),
     defaultValues: {
@@ -51,10 +53,10 @@ export default function LoginPage() {
       <Card className="w-full max-w-sm p-6 shadow-lg border border-gray-200">
         <CardHeader className="space-y-2 text-center">
           <CardTitle className="text-2xl font-semibold">
-            Login to your account
+            {t("title")}
           </CardTitle>
           <CardDescription>
-            Enter your email and password below to access your account.
+            {t("description")}
           </CardDescription>
         </CardHeader>
 
@@ -85,12 +87,12 @@ export default function LoginPage() {
                 render={({ field }) => (
                   <FormItem>
                     <div className="flex items-center justify-between">
-                      <FormLabel>Password</FormLabel>
+                      <FormLabel>{t("password")}</FormLabel>
                       <a
                         href="#"
                         className="text-sm text-primary hover:underline underline-offset-4"
                       >
-                        Forgot password?
+                        {t("forgot_password")}
                       </a>
                     </div>
                     <FormControl>
@@ -101,8 +103,9 @@ export default function LoginPage() {
                 )}
               />
 
-              <Button type="submit" className="w-full">
-                Login
+              <Button type="submit" className="w-full"  disabled={form.formState.isSubmitting}>
+                {form.formState.isSubmitting && <Spinner />}
+                {t("submit")}
               </Button>
             </form>
           </Form>
@@ -110,9 +113,9 @@ export default function LoginPage() {
 
         <CardFooter className="flex flex-col gap-2">
           <p className="text-sm text-gray-500 text-center">
-            Don’t have an account?{" "}
+            {t("create_account")}{" "}
             <a href="#" className="text-primary hover:underline">
-              Sign up
+              {t("sign_up")}
             </a>
           </p>
         </CardFooter>
