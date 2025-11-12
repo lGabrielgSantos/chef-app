@@ -18,5 +18,18 @@
   "dashboard": {
     "welcome": "Bem-vindo ao painel",
     "reports": "Relatórios"
+  },
+  "navigation": {
+    "playground": "Área de Testes",
+    "models": "Modelos",
+    "documentation": "Documentação",
+    "settings": "Configurações",
+    "history": "Histórico",
+    "starred": "Favoritos",
+    "team": "Equipe",
+    "billing": "Faturamento",
+    "limits": "Limites",
+    "getStarted": "Primeiros Passos",
+    "tutorials": "Tutoriais"
   }
 }

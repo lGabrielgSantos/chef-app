@@ -2,35 +2,34 @@ import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 import createIntlMiddleware from "next-intl/middleware";
 
-const intlMiddleware = createIntlMiddleware({
-  locales: ["pt", "en"],
-  defaultLocale: "pt",
-  localeDetection: true,
-});
+import { locales } from "@/config/locales";
+import { publicPaths, privatePrefixes, defaultRedirect } from "@/config/routes";
 
-const PUBLIC_PATHS = ["/login", "/register", "/forgot-password"];
-const PRIVATE_PREFIXES = ["/dashboard", "/orders", "/products", "/clients"];
+const intlMiddleware = createIntlMiddleware({
+  locales: locales.supported,
+  defaultLocale: locales.default,
+  localeDetection: locales.detection,
+});
 
 export function middleware(request: NextRequest) {
   const response = intlMiddleware(request);
-
   const { pathname } = request.nextUrl;
+
   const token = request.cookies.get("token")?.value ?? "";
 
   const pathWithoutLocale = pathname.replace(/^\/(pt|en)(?=\/|$)/, "");
-
   const currentLocale = pathname.startsWith("/en") ? "en" : "pt";
 
-  if (PUBLIC_PATHS.includes(pathWithoutLocale)) {
+  if (publicPaths.includes(pathWithoutLocale)) {
     if (token) {
       return NextResponse.redirect(
-        new URL(`/${currentLocale}/dashboard`, request.url)
+        new URL(`/${currentLocale}${defaultRedirect}`, request.url)
       );
     }
     return response;
   }
 
-  if (PRIVATE_PREFIXES.some((p) => pathWithoutLocale.startsWith(p))) {
+  if (privatePrefixes.some((p) => pathWithoutLocale.startsWith(p))) {
     if (!token) {
       return NextResponse.redirect(
         new URL(`/${currentLocale}/login`, request.url)
