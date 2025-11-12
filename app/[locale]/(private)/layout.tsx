@@ -2,7 +2,6 @@
 
 import { usePathname } from "next/navigation"
 import Link from "next/link"
-import { AppSidebar } from "@/components/navigation/app-sidebar"
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -17,6 +16,11 @@ import {
   SidebarProvider,
   SidebarTrigger,
 } from "@/components/ui/sidebar"
+import dynamic from "next/dynamic";
+
+const AppSidebar = dynamic(() => import("@/components/navigation/app-sidebar").then(mod => mod.AppSidebar), {
+  ssr: false,
+});
 
 export default function Layout({
   children,

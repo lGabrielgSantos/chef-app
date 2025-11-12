@@ -44,8 +44,7 @@ export default function LoginPage() {
   });
 
   async function onSubmit(values: LoginFormValues) {
-    console.log("Login data:", values);
-    console.log(await signIn(values.email, values.password));
+    await signIn(values.email, values.password)
   }
 
   return (
@@ -103,7 +102,7 @@ export default function LoginPage() {
                 )}
               />
 
-              <Button type="submit" className="w-full"  disabled={form.formState.isSubmitting}>
+              <Button type="submit" className="w-full" disabled={form.formState.isSubmitting}>
                 {form.formState.isSubmitting && <Spinner />}
                 {t("submit")}
               </Button>

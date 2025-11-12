@@ -1,5 +1,3 @@
-"use client"
-
 import * as React from "react"
 import {
   AudioWaveform,
@@ -24,9 +22,7 @@ import {
   SidebarRail,
 } from "@/components/ui/sidebar"
 import { NavMain } from "./nav-main"
-import { useAuthStore } from "@/lib/store/auth-store"
 
-// This is sample data.
 const data = {
   user: {
     name: "shadcn",
@@ -157,7 +153,6 @@ const data = {
 }
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
-    const { user } = useAuthStore();
   
   return (
     <Sidebar collapsible="icon" {...props}>
