@@ -20,16 +20,25 @@
     "reports": "Relatórios"
   },
   "navigation": {
-    "playground": "Área de Testes",
-    "models": "Modelos",
-    "documentation": "Documentação",
-    "settings": "Configurações",
-    "history": "Histórico",
-    "starred": "Favoritos",
-    "team": "Equipe",
-    "billing": "Faturamento",
-    "limits": "Limites",
-    "getStarted": "Primeiros Passos",
-    "tutorials": "Tutoriais"
+    "main": {
+      "dashboard": "Painel",
+      "orders": "Pedidos",
+      "customers": "Clientes",
+      "settings": "Configurações"
+    },
+    "orders": {
+      "history": "Histórico",
+      "new": "Novo Pedido"
+    },
+    "customers": {
+      "new": "Novo Cliente"
+    },
+
+    "settings": {
+      "general": "Geral",
+      "team": "Equipe",
+      "billing": "Faturamento",
+      "limits": "Limites"
+    }
   }
 }
