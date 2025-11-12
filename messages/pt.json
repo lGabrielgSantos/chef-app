@@ -26,6 +26,11 @@
       "customers": "Clientes",
       "settings": "Configurações"
     },
+    "dashboard": {
+      "overview": "Visão geral",
+      "stats": "Estatísticas",
+      "reports": "Relatórios"
+    },
     "orders": {
       "history": "Histórico",
       "new": "Novo Pedido"

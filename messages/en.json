@@ -26,6 +26,11 @@
       "customers": "Customers",
       "settings": "Settings"
     },
+    "dashboard": {
+      "overview": "Overview",
+      "stats": "Statistics",
+      "reports": "Reports"
+    },
     "orders": {
       "history": "History",
       "new": "New Order"
