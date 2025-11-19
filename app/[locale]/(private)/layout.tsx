@@ -67,6 +67,7 @@ export default function Layout({
                     )}
                   </BreadcrumbItem>
                 ))}
+
               </BreadcrumbList>
             </Breadcrumb>
           </div>
