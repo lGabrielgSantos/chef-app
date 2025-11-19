@@ -60,11 +60,6 @@ export function NavMain({
           <Collapsible
             key={item.title}
             asChild
-            open={openItem === item.title}
-            onOpenChange={(state) => {
-              // se abrir esse, fecha todos os outros
-              setOpenItem(state ? item.title : null)
-            }}
             className="group/collapsible"
 
           >
