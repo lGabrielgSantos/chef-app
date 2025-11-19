@@ -58,14 +58,14 @@ export default function Layout({
                         <BreadcrumbLink asChild>
                           <Link href={crumb.href}>{crumb.label}</Link>
                         </BreadcrumbLink>
-                        <BreadcrumbSeparator>
-                          <span className="hidden md:block">/</span>
-                        </BreadcrumbSeparator>
+                        <span aria-hidden="true" className="hidden md:inline"> {">"} </span>
+
                       </>
                     ) : (
                       <BreadcrumbPage>{crumb.label}</BreadcrumbPage>
                     )}
                   </BreadcrumbItem>
+
                 ))}
 
               </BreadcrumbList>
