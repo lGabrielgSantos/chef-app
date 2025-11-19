@@ -7,10 +7,13 @@ import {
   Command,
   Frame,
   GalleryVerticalEnd,
+  LayoutDashboardIcon,
   Map,
   PieChart,
   Settings2,
   SquareTerminal,
+  Store,
+  Users,
 } from "lucide-react";
 
 export function useSidebarConfig() {
@@ -30,7 +33,7 @@ export function useSidebarConfig() {
     {
       title: tMain("dashboard"),
       url: "/dashboard",
-      icon: SquareTerminal,
+      icon: LayoutDashboardIcon,
       items: [
         { title: tDashboard("overview"), url: "/dashboard" },
         { title: tDashboard("stats"), url: "/dashboard/stats" },
@@ -41,7 +44,7 @@ export function useSidebarConfig() {
     {
       title: tMain("orders"),
       url: "/orders",
-      icon: Bot,
+      icon: Store,
       items: [
         { title: tOrders("history"), url: "/orders" },
         { title: tOrders("new"), url: "/orders/new" },
@@ -50,7 +53,7 @@ export function useSidebarConfig() {
     {
       title: tMain("customers"),
       url: "/customers",
-      icon: Bot,
+      icon: Users,
       items: [{ title: tCustomers("new"), url: "#" }],
     },
     {
