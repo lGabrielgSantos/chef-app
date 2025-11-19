@@ -16,11 +16,8 @@ import {
   SidebarProvider,
   SidebarTrigger,
 } from "@/components/ui/sidebar"
-import dynamic from "next/dynamic";
+import { AppSidebar } from "@/components/navigation/app-sidebar"
 
-const AppSidebar = dynamic(() => import("@/components/navigation/app-sidebar").then(mod => mod.AppSidebar), {
-  ssr: false,
-});
 
 export default function Layout({
   children,

@@ -17,6 +17,9 @@ import {
   SidebarMenuSubButton,
   SidebarMenuSubItem,
 } from "@/components/ui/sidebar"
+import { usePathname } from "next/navigation"
+import { useEffect, useState } from "react"
+import Link from "next/link"
 
 export function NavMain({
   items,
@@ -26,12 +29,29 @@ export function NavMain({
     url: string
     icon?: LucideIcon
     isActive?: boolean
+
     items?: {
       title: string
       url: string
     }[]
   }[]
 }) {
+  const pathname = usePathname()
+
+  // controla qual menu está aberto
+  const [openItem, setOpenItem] = useState<string | null>(null)
+
+  // sempre que mudar a rota, abre o item correspondente
+  useEffect(() => {
+    const found = items.find(item =>
+      item.items?.some(sub => sub.url === pathname)
+    )
+
+    if (found) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
+      setOpenItem(found.title) // abre o pai do submenu
+    }
+  }, [pathname, items])
   return (
     <SidebarGroup>
       <SidebarGroupLabel>Platform</SidebarGroupLabel>
@@ -40,8 +60,13 @@ export function NavMain({
           <Collapsible
             key={item.title}
             asChild
-            defaultOpen={item.isActive}
+            open={openItem === item.title}
+            onOpenChange={(state) => {
+              // se abrir esse, fecha todos os outros
+              setOpenItem(state ? item.title : null)
+            }}
             className="group/collapsible"
+
           >
             <SidebarMenuItem>
               <CollapsibleTrigger asChild>
@@ -56,9 +81,9 @@ export function NavMain({
                   {item.items?.map((subItem) => (
                     <SidebarMenuSubItem key={subItem.title}>
                       <SidebarMenuSubButton asChild>
-                        <a href={subItem.url}>
+                        <Link href={subItem.url}>
                           <span>{subItem.title}</span>
-                        </a>
+                        </Link>
                       </SidebarMenuSubButton>
                     </SidebarMenuSubItem>
                   ))}
