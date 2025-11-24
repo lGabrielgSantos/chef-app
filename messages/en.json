@@ -56,7 +56,8 @@
     "empty": "No customers found.",
     "status": {
       "active": "Active",
-      "trial": "Trial"
+      "trial": "Trial",
+      "inactive": "Inactive"
     }
   }
 }

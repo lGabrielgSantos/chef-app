@@ -57,7 +57,8 @@
     "empty": "Nenhum cliente encontrado.",
     "status": {
       "active": "Ativo",
-      "trial": "Em avaliacao"
+      "trial": "Em avaliacao",
+      "inactive": "Inativo"
     }
   }
 }

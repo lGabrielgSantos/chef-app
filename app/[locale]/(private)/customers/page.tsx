@@ -18,8 +18,6 @@ import { useCustomers } from "@/lib/hooks/useCustomers";
 
 import type { CustomerStatus } from "@/lib/api/customers";
 
-
-
 export default function CustomersPage() {
   const t = useTranslations("customersPage");
   const { customers, loading, error } = useCustomers();
@@ -39,6 +37,20 @@ export default function CustomersPage() {
   const formatStatus = (status?: CustomerStatus | null) => {
     const statusKey = status ?? "active";
     return t(`status.${statusKey}`, { defaultMessage: statusKey });
+  };
+
+  const getStatusColor = (status?: CustomerStatus | null) => {
+    const statusKey = status ?? "active";
+    switch (statusKey) {
+      case "active":
+        return "bg-emerald-100 text-emerald-700 dark:bg-emerald-950 dark:text-emerald-300";
+      case "trial":
+        return "bg-amber-100 text-amber-700 dark:bg-amber-950 dark:text-amber-300";
+      case "inactive":
+        return "bg-muted text-muted-foreground";
+      default:
+        return "bg-secondary text-secondary-foreground";
+    }
   };
 
   return (
@@ -103,7 +115,7 @@ export default function CustomersPage() {
                 </div>
                 <div className="flex items-start gap-2 text-sm text-muted-foreground sm:flex-row sm:items-center sm:gap-4">
                   <span>{customer.city}</span>
-                  <span className="self-start rounded-full bg-secondary px-3 py-1 text-xs font-semibold text-secondary-foreground sm:self-auto">
+                  <span className={`self-start rounded-full px-3 py-1 text-xs font-semibold sm:self-auto ${getStatusColor(customer.status)}`}>
                     {formatStatus(customer.status)}
                   </span>
                 </div>
