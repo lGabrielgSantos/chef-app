@@ -14,13 +14,14 @@ import {
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Spinner } from "@/components/ui/spinner";
+import NewCustomerModal from "@/components/NewCustomerModal";
 import { useCustomers } from "@/lib/hooks/useCustomers";
 
 import type { CustomerStatus } from "@/lib/api/customers";
 
 export default function CustomersPage() {
   const t = useTranslations("customersPage");
-  const { customers, loading, error } = useCustomers();
+  const { customers, loading, error, addCustomer } = useCustomers();
   const [searchTerm, setSearchTerm] = useState("");
 
   const filteredCustomers = useMemo(() => {
@@ -61,7 +62,7 @@ export default function CustomersPage() {
             <CardTitle className="text-2xl">{t("title")}</CardTitle>
             <CardDescription>{t("description")}</CardDescription>
           </div>
-          <Button className="w-full sm:w-auto">{t("addCustomer")}</Button>
+          <NewCustomerModal onCreate={addCustomer} triggerLabel="Novo Customer" />
         </CardHeader>
         <CardContent className="space-y-4">
           <Input
