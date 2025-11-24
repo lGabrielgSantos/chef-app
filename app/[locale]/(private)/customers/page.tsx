@@ -41,6 +41,20 @@ export default function CustomersPage() {
     return t(`status.${statusKey}`, { defaultMessage: statusKey });
   };
 
+  const getStatusColor = (status?: CustomerStatus | null) => {
+    const statusKey = status ?? "active";
+    switch (statusKey) {
+      case "active":
+        return "bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400";
+      case "trial":
+        return "bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400";
+      case "inactive":
+        return "bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400";
+      default:
+        return "bg-secondary text-secondary-foreground";
+    }
+  };
+
   return (
     <div className="flex flex-col gap-6">
       <Card>
@@ -103,7 +117,7 @@ export default function CustomersPage() {
                 </div>
                 <div className="flex items-start gap-2 text-sm text-muted-foreground sm:flex-row sm:items-center sm:gap-4">
                   <span>{customer.city}</span>
-                  <span className="self-start rounded-full bg-secondary px-3 py-1 text-xs font-semibold text-secondary-foreground sm:self-auto">
+                  <span className={`self-start rounded-full px-3 py-1 text-xs font-semibold sm:self-auto ${getStatusColor(customer.status)}`}>
                     {formatStatus(customer.status)}
                   </span>
                 </div>
