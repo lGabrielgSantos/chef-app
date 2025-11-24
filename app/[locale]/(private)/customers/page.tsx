@@ -39,6 +39,20 @@ export default function CustomersPage() {
     return t(`status.${statusKey}`, { defaultMessage: statusKey });
   };
 
+  const getStatusStyles = (status?: CustomerStatus | null) => {
+    const statusKey = status ?? "active";
+    switch (statusKey) {
+      case "active":
+        return "bg-green-500 text-white";
+      case "trial":
+        return "bg-yellow-500 text-white";
+      case "inactive":
+        return "bg-gray-500 text-white";
+      default:
+        return "bg-secondary text-secondary-foreground";
+    }
+  };
+
   return (
     <div className="flex flex-col gap-6">
       <Card>
@@ -101,7 +115,7 @@ export default function CustomersPage() {
                 </div>
                 <div className="flex items-start gap-2 text-sm text-muted-foreground sm:flex-row sm:items-center sm:gap-4">
                   <span>{customer.city}</span>
-                  <span className="self-start rounded-full bg-secondary px-3 py-1 text-xs font-semibold text-secondary-foreground sm:self-auto">
+                  <span className={`self-start rounded-full px-3 py-1 text-xs font-semibold sm:self-auto ${getStatusStyles(customer.status)}`}>
                     {formatStatus(customer.status)}
                   </span>
                 </div>
