@@ -75,12 +75,12 @@ export default function CustomersPage() {
   return (
     <div className="flex flex-col gap-6">
       <Card>
-        <CardHeader className="flex flex-row items-start justify-between gap-2">
+        <CardHeader className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
           <div className="space-y-1">
             <CardTitle className="text-2xl">{t("title")}</CardTitle>
             <CardDescription>{t("description")}</CardDescription>
           </div>
-          <Button>{t("addCustomer")}</Button>
+          <Button className="w-full sm:w-auto">{t("addCustomer")}</Button>
         </CardHeader>
         <CardContent className="space-y-4">
           <Input
@@ -92,9 +92,9 @@ export default function CustomersPage() {
             {customers.map((customer) => (
               <div
                 key={customer.email}
-                className="flex items-center justify-between rounded-lg border bg-card px-4 py-3 shadow-sm transition-colors hover:bg-muted/60"
+                className="flex flex-col gap-3 rounded-lg border bg-card px-4 py-3 shadow-sm transition-colors hover:bg-muted/60 sm:flex-row sm:items-center sm:justify-between"
               >
-                <div className="flex items-center gap-3">
+                <div className="flex items-start gap-3 sm:items-center">
                   <Avatar className="h-10 w-10">
                     <AvatarFallback>
                       {customer.name
@@ -107,12 +107,14 @@ export default function CustomersPage() {
                   </Avatar>
                   <div className="space-y-0.5">
                     <p className="font-medium leading-none">{customer.name}</p>
-                    <p className="text-sm text-muted-foreground">{customer.email}</p>
+                    <p className="text-sm text-muted-foreground break-words">
+                      {customer.email}
+                    </p>
                   </div>
                 </div>
-                <div className="flex items-center gap-4 text-sm text-muted-foreground">
+                <div className="flex items-start gap-2 text-sm text-muted-foreground sm:flex-row sm:items-center sm:gap-4">
                   <span>{customer.city}</span>
-                  <span className="rounded-full bg-secondary px-3 py-1 text-xs font-semibold text-secondary-foreground">
+                  <span className="self-start rounded-full bg-secondary px-3 py-1 text-xs font-semibold text-secondary-foreground sm:self-auto">
                     {t(`status.${customer.status}`)}
                   </span>
                 </div>
