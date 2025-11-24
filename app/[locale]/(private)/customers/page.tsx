@@ -4,7 +4,6 @@ import { useMemo, useState } from "react";
 import { useTranslations } from "next-intl";
 
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
-import { Button } from "@/components/ui/button";
 import {
   Card,
   CardContent,
@@ -13,6 +12,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
+import { ScrollArea } from "@/components/ui/scroll-area";
 import { Spinner } from "@/components/ui/spinner";
 import NewCustomerModal from "@/components/NewCustomerModal";
 import { useCustomers } from "@/lib/hooks/useCustomers";
@@ -85,48 +85,50 @@ export default function CustomersPage() {
             </p>
           )}
 
-          <div className="space-y-3">
-            {filteredCustomers.map((customer) => (
-              <div
-                key={customer.id ?? customer.email}
-                className="flex flex-col gap-3 rounded-lg border bg-card px-4 py-3 shadow-sm transition-colors hover:bg-muted/60 sm:flex-row sm:items-center sm:justify-between"
-              >
-                <div className="flex items-start gap-3 sm:items-center">
-                  <Avatar className="h-10 w-10">
-                    <AvatarFallback>
-                      {customer.name
-                        .split(" ")
-                        .map((part) => part[0])
-                        .join("")
-                        .slice(0, 2)
-                        .toUpperCase()}
-                    </AvatarFallback>
-                  </Avatar>
-                  <div className="space-y-0.5">
-                    <p className="font-medium leading-none">{customer.name}</p>
-                    <p className="text-sm break-words text-muted-foreground">
-                      {customer.email}
-                    </p>
-                    {customer.phone && (
+          <ScrollArea className="max-h-[60vh] pr-1">
+            <div className="space-y-3">
+              {filteredCustomers.map((customer) => (
+                <div
+                  key={customer.id ?? customer.email}
+                  className="flex flex-col gap-3 rounded-lg border bg-card px-4 py-3 shadow-sm transition-colors hover:bg-muted/60 sm:flex-row sm:items-center sm:justify-between"
+                >
+                  <div className="flex items-start gap-3 sm:items-center">
+                    <Avatar className="h-10 w-10">
+                      <AvatarFallback>
+                        {customer.name
+                          .split(" ")
+                          .map((part) => part[0])
+                          .join("")
+                          .slice(0, 2)
+                          .toUpperCase()}
+                      </AvatarFallback>
+                    </Avatar>
+                    <div className="space-y-0.5">
+                      <p className="font-medium leading-none">{customer.name}</p>
                       <p className="text-sm break-words text-muted-foreground">
-                        {customer.phone}
+                        {customer.email}
                       </p>
-                    )}
+                      {customer.phone && (
+                        <p className="text-sm break-words text-muted-foreground">
+                          {customer.phone}
+                        </p>
+                      )}
+                    </div>
+                  </div>
+                  <div className="flex items-start gap-2 text-sm text-muted-foreground sm:flex-row sm:items-center sm:gap-4">
+                    <span>{customer.city}</span>
+                    <span className={`self-start rounded-full px-3 py-1 text-xs font-semibold sm:self-auto ${getStatusStyles(customer.status)}`}>
+                      {formatStatus(customer.status)}
+                    </span>
                   </div>
                 </div>
-                <div className="flex items-start gap-2 text-sm text-muted-foreground sm:flex-row sm:items-center sm:gap-4">
-                  <span>{customer.city}</span>
-                  <span className={`self-start rounded-full px-3 py-1 text-xs font-semibold sm:self-auto ${getStatusStyles(customer.status)}`}>
-                    {formatStatus(customer.status)}
-                  </span>
-                </div>
-              </div>
-            ))}
+              ))}
 
-            {!loading && filteredCustomers.length === 0 && (
-              <p className="text-sm text-muted-foreground">{t("empty")}</p>
-            )}
-          </div>
+              {!loading && filteredCustomers.length === 0 && (
+                <p className="text-sm text-muted-foreground">{t("empty")}</p>
+              )}
+            </div>
+          </ScrollArea>
         </CardContent>
       </Card>
     </div>
