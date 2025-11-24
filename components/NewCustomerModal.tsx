@@ -33,7 +33,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Spinner } from "@/components/ui/spinner";
-import type { CustomerPayload } from "@/lib/api/customers";
+import type { CustomerPayload } from "@/lib/dto/customer";
 
 const customerSchema = z.object({
   name: z.string().trim().min(1, "Nome é obrigatório"),

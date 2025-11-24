@@ -6,9 +6,8 @@ import {
   fetchCustomer,
   fetchCustomers,
   updateCustomer,
-  Customer,
-  CustomerPayload,
 } from "@/lib/api/customers";
+import type { Customer, CustomerPayload } from "@/lib/dto/customer";
 
 interface UseCustomersOptions {
   autoFetch?: boolean;

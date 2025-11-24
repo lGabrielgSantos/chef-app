@@ -1,10 +1,16 @@
 import { Avatar, AvatarFallback } from "./ui/avatar";
-import type { CustomerStatus } from "@/lib/api/customers";
+import type { Customer, CustomerStatus } from "@/lib/dto/customer";
 
-export default function NewCustomerCard({ customer, t = (key: string, options?: { defaultMessage?: string }) => options?.defaultMessage ?? key }: {
-    customer: any;
-    t?: (key: string, options?: { defaultMessage?: string }) => string;
-}) {
+interface NewCustomerCardProps {
+  customer: Customer;
+  t?: (key: string, options?: { defaultMessage?: string }) => string;
+}
+
+export default function NewCustomerCard({
+  customer,
+  t = (key: string, options?: { defaultMessage?: string }) =>
+    options?.defaultMessage ?? key,
+}: NewCustomerCardProps) {
     const formatStatus = (status?: CustomerStatus | null) => {
         const statusKey = status ?? "active";
         return t(`status.${statusKey}`, { defaultMessage: statusKey });
