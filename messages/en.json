@@ -51,6 +51,8 @@
     "description": "Manage your customers and keep track of their status.",
     "addCustomer": "Add customer",
     "searchPlaceholder": "Search by name or email",
+    "loading": "Loading customers...",
+    "error": "Could not load customers. Please try again.",
     "empty": "No customers found.",
     "status": {
       "active": "Active",

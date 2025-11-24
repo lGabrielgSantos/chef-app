@@ -1,85 +1,43 @@
-"use client"
+"use client";
 
-import { useTranslations } from "next-intl"
-import { useParams } from "next/navigation"
+import { useMemo, useState } from "react";
+import { useTranslations } from "next-intl";
 
-import { Avatar, AvatarFallback } from "@/components/ui/avatar"
-import { Button } from "@/components/ui/button"
+import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { Button } from "@/components/ui/button";
 import {
   Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card"
-import { Input } from "@/components/ui/input"
+} from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Spinner } from "@/components/ui/spinner";
+import { useCustomers } from "@/lib/hooks/useCustomers";
 
-type Customer = {
-  name: string
-  email: string
-  phone: string
-  city: string
-  status: "active" | "trial"
-  createdAt?: string
-  updatedAt?: string
-}
-
-const customersByLocale: Record<string, Customer[]> = {
-  en: [
-    {
-      name: "Sofia Cooper",
-      email: "sofia.cooper@example.com",
-      phone: "555-1234",
-      city: "San Francisco, CA",
-      status: "active",
-    },
-    {
-      name: "Anthony Nguyen",
-      email: "anthony.nguyen@example.com",
-      city: "Austin, TX",
-      status: "trial",
-      phone: ""
-    },
-    {
-      name: "Maria Lopez",
-      email: "maria.lopez@example.com",
-      city: "Miami, FL",
-      status: "active",
-      phone: ""
-    },
-  ],
-  pt: [
-    {
-      name: "Ana Souza",
-      email: "ana.souza@example.com",
-      city: "Sao Paulo, SP",
-      status: "active",
-      phone: "179918"
-    },
-    {
-      name: "Bruno Lima",
-      email: "bruno.lima@example.com",
-      city: "Rio de Janeiro, RJ",
-      status: "trial",
-      phone: ""
-    },
-    {
-      name: "Carla Ramos",
-      email: "carla.ramos@example.com",
-      city: "Belo Horizonte, MG",
-      status: "active",
-      phone: ""
-    },
-  ],
-}
+import type { CustomerStatus } from "@/lib/api/customers";
 
 export default function CustomersPage() {
-  const params = useParams<{ locale: string }>()
-  const localeParam = Array.isArray(params?.locale) ? params.locale[0] : params?.locale
-  const locale = localeParam === "en" ? "en" : "pt"
-  const t = useTranslations("customersPage")
+  const t = useTranslations("customersPage");
+  const { customers, loading, error } = useCustomers();
+  const [searchTerm, setSearchTerm] = useState("");
 
-  const customers = customersByLocale[locale] ?? customersByLocale.en
+  const filteredCustomers = useMemo(() => {
+    const query = searchTerm.trim().toLowerCase();
+    if (!query) return customers;
+
+    return customers.filter((customer) =>
+      [customer.name, customer.email, customer.city]
+        .filter(Boolean)
+        .some((field) => field!.toLowerCase().includes(query))
+    );
+  }, [customers, searchTerm]);
+
+  const formatStatus = (status?: CustomerStatus | null) => {
+    const statusKey = status ?? "active";
+    return t(`status.${statusKey}`, { defaultMessage: statusKey });
+  };
 
   return (
     <div className="flex flex-col gap-6">
@@ -96,11 +54,26 @@ export default function CustomersPage() {
             placeholder={t("searchPlaceholder")}
             className="max-w-md"
             aria-label={t("searchPlaceholder")}
+            value={searchTerm}
+            onChange={(event) => setSearchTerm(event.target.value)}
           />
+
+          {loading && (
+            <div className="flex justify-center py-6">
+              <Spinner />
+            </div>
+          )}
+
+          {error && (
+            <p className="text-sm text-destructive" role="alert">
+              {t("error")}
+            </p>
+          )}
+
           <div className="space-y-3">
-            {customers.map((customer) => (
+            {filteredCustomers.map((customer) => (
               <div
-                key={customer.email}
+                key={customer.id ?? customer.email}
                 className="flex flex-col gap-3 rounded-lg border bg-card px-4 py-3 shadow-sm transition-colors hover:bg-muted/60 sm:flex-row sm:items-center sm:justify-between"
               >
                 <div className="flex items-start gap-3 sm:items-center">
@@ -116,28 +89,31 @@ export default function CustomersPage() {
                   </Avatar>
                   <div className="space-y-0.5">
                     <p className="font-medium leading-none">{customer.name}</p>
-                    <p className="text-sm text-muted-foreground break-words">
+                    <p className="text-sm break-words text-muted-foreground">
                       {customer.email}
                     </p>
-                    <p className="text-sm text-muted-foreground break-words">
-                      {customer.phone}
-                    </p>
+                    {customer.phone && (
+                      <p className="text-sm break-words text-muted-foreground">
+                        {customer.phone}
+                      </p>
+                    )}
                   </div>
                 </div>
                 <div className="flex items-start gap-2 text-sm text-muted-foreground sm:flex-row sm:items-center sm:gap-4">
                   <span>{customer.city}</span>
                   <span className="self-start rounded-full bg-secondary px-3 py-1 text-xs font-semibold text-secondary-foreground sm:self-auto">
-                    {t(`status.${customer.status}`)}
+                    {formatStatus(customer.status)}
                   </span>
                 </div>
               </div>
             ))}
-            {customers.length === 0 && (
+
+            {!loading && filteredCustomers.length === 0 && (
               <p className="text-sm text-muted-foreground">{t("empty")}</p>
             )}
           </div>
         </CardContent>
       </Card>
     </div>
-  )
+  );
 }
