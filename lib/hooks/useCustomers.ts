@@ -48,7 +48,6 @@ export function useCustomers(
     setError(null);
     try {
       const data = await fetchCustomers();
-      console.log("Fetched customers:", data);
       setCustomers(data);
     } catch (err) {
       handleError(err);
