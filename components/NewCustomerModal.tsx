@@ -210,7 +210,7 @@ export function NewCustomerModal({
                   Cancelar
                 </Button>
               </DialogClose>
-              <Button type="submit" disabled={form.formState.isSubmitting}>
+              <Button type="submit" disabled={form.formState.isSubmitting} >
                 {form.formState.isSubmitting && (
                   <Spinner className="mr-2" aria-hidden />
                 )}
