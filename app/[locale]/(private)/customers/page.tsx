@@ -17,8 +17,11 @@ import { Input } from "@/components/ui/input"
 type Customer = {
   name: string
   email: string
+  phone: string
   city: string
   status: "active" | "trial"
+  createdAt?: string
+  updatedAt?: string
 }
 
 const customersByLocale: Record<string, Customer[]> = {
@@ -26,6 +29,7 @@ const customersByLocale: Record<string, Customer[]> = {
     {
       name: "Sofia Cooper",
       email: "sofia.cooper@example.com",
+      phone: "555-1234",
       city: "San Francisco, CA",
       status: "active",
     },
@@ -34,12 +38,14 @@ const customersByLocale: Record<string, Customer[]> = {
       email: "anthony.nguyen@example.com",
       city: "Austin, TX",
       status: "trial",
+      phone: ""
     },
     {
       name: "Maria Lopez",
       email: "maria.lopez@example.com",
       city: "Miami, FL",
       status: "active",
+      phone: ""
     },
   ],
   pt: [
@@ -48,18 +54,21 @@ const customersByLocale: Record<string, Customer[]> = {
       email: "ana.souza@example.com",
       city: "Sao Paulo, SP",
       status: "active",
+      phone: "179918"
     },
     {
       name: "Bruno Lima",
       email: "bruno.lima@example.com",
       city: "Rio de Janeiro, RJ",
       status: "trial",
+      phone: ""
     },
     {
       name: "Carla Ramos",
       email: "carla.ramos@example.com",
       city: "Belo Horizonte, MG",
       status: "active",
+      phone: ""
     },
   ],
 }
@@ -109,6 +118,9 @@ export default function CustomersPage() {
                     <p className="font-medium leading-none">{customer.name}</p>
                     <p className="text-sm text-muted-foreground break-words">
                       {customer.email}
+                    </p>
+                    <p className="text-sm text-muted-foreground break-words">
+                      {customer.phone}
                     </p>
                   </div>
                 </div>
