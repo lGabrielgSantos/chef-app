@@ -3,7 +3,6 @@
 import { useTranslations } from "next-intl";
 import {
   AudioWaveform,
-  Bot,
   Command,
   Frame,
   GalleryVerticalEnd,
@@ -11,7 +10,6 @@ import {
   Map,
   PieChart,
   Settings2,
-  SquareTerminal,
   Store,
   Users,
 } from "lucide-react";
@@ -38,8 +36,7 @@ export function useSidebarConfig() {
         { title: tDashboard("overview"), url: "/dashboard" },
         { title: tDashboard("stats"), url: "/dashboard/stats" },
         { title: tDashboard("reports"), url: "/dashboard/reports" },
-
-      ]
+      ],
     },
     {
       title: tMain("orders"),
@@ -54,7 +51,10 @@ export function useSidebarConfig() {
       title: tMain("customers"),
       url: "/customers",
       icon: Users,
-      items: [{ title: tCustomers("new"), url: "#" }],
+      items: [
+        { title: tCustomers("list"), url: "/customers" },
+        { title: tCustomers("new"), url: "#" },
+      ],
     },
     {
       title: tMain("settings"),

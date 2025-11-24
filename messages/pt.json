@@ -36,7 +36,8 @@
       "new": "Novo Pedido"
     },
     "customers": {
-      "new": "Novo Cliente"
+      "new": "Novo Cliente",
+      "list": "Lista de Clientes"
     },
 
     "settings": {
@@ -44,6 +45,17 @@
       "team": "Equipe",
       "billing": "Faturamento",
       "limits": "Limites"
+    }
+  },
+  "customersPage": {
+    "title": "Clientes",
+    "description": "Administre sua base de clientes e acompanhe o status.",
+    "addCustomer": "Adicionar cliente",
+    "searchPlaceholder": "Buscar por nome ou email",
+    "empty": "Nenhum cliente encontrado.",
+    "status": {
+      "active": "Ativo",
+      "trial": "Em avaliacao"
     }
   }
 }
