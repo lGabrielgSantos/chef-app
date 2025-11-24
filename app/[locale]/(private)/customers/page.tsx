@@ -12,7 +12,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-import { ScrollArea } from "@/components/ui/scroll-area";
+import { ScrollArea } from "@/components/ui/scroll-area"
 import { Spinner } from "@/components/ui/spinner";
 import NewCustomerModal from "@/components/NewCustomerModal";
 import { useCustomers } from "@/lib/hooks/useCustomers";
@@ -56,7 +56,7 @@ export default function CustomersPage() {
 
   return (
     <div className="flex flex-col gap-6">
-      <Card>
+      <Card  className="h-[85vh] flex flex-col">
         <CardHeader className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
           <div className="space-y-1">
             <CardTitle className="text-2xl">{t("title")}</CardTitle>
@@ -64,7 +64,7 @@ export default function CustomersPage() {
           </div>
           <NewCustomerModal onCreate={addCustomer} triggerLabel="Novo Customer" />
         </CardHeader>
-        <CardContent className="space-y-4">
+        <CardContent className="flex flex-col gap-4 flex-1 min-h-0">
           <Input
             placeholder={t("searchPlaceholder")}
             className="max-w-md"
@@ -85,7 +85,8 @@ export default function CustomersPage() {
             </p>
           )}
 
-          <ScrollArea className="max-h-[60vh] pr-1">
+          <ScrollArea className="h-[60vh] pr-1">
+
             <div className="space-y-3">
               {filteredCustomers.map((customer) => (
                 <div
