@@ -18,6 +18,8 @@ import { useCustomers } from "@/lib/hooks/useCustomers";
 
 import type { CustomerStatus } from "@/lib/api/customers";
 
+
+
 export default function CustomersPage() {
   const t = useTranslations("customersPage");
   const { customers, loading, error } = useCustomers();
