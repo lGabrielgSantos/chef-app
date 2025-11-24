@@ -18,7 +18,7 @@ import { useCustomers } from "@/lib/hooks/useCustomers";
 
 import type { CustomerStatus } from "@/lib/api/customers";
 
-// TODO: alter status for alter color by status
+
 
 export default function CustomersPage() {
   const t = useTranslations("customersPage");
