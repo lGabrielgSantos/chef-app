@@ -17,8 +17,7 @@ import { Spinner } from "@/components/ui/spinner";
 import { useCustomers } from "@/lib/hooks/useCustomers";
 
 import type { CustomerStatus } from "@/lib/api/customers";
-
-
+import { cn } from "@/lib/utils";
 
 export default function CustomersPage() {
   const t = useTranslations("customersPage");
@@ -117,7 +116,7 @@ export default function CustomersPage() {
                 </div>
                 <div className="flex items-start gap-2 text-sm text-muted-foreground sm:flex-row sm:items-center sm:gap-4">
                   <span>{customer.city}</span>
-                  <span className={`self-start rounded-full px-3 py-1 text-xs font-semibold sm:self-auto ${getStatusColor(customer.status)}`}>
+                  <span className={cn("self-start rounded-full px-3 py-1 text-xs font-semibold sm:self-auto", getStatusColor(customer.status))}>
                     {formatStatus(customer.status)}
                   </span>
                 </div>
