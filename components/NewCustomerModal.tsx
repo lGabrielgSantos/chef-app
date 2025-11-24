@@ -1,19 +1,20 @@
 "use client";
 
-import { useState } from "react";
-import { z } from "zod";
+import { useMemo, useState } from "react";
+import { useTranslations } from "next-intl";
 import { useForm } from "react-hook-form";
+import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 
 import {
   Dialog,
+  DialogClose,
   DialogContent,
   DialogDescription,
   DialogFooter,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-  DialogClose,
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import {
@@ -35,15 +36,18 @@ import {
 import { Spinner } from "@/components/ui/spinner";
 import type { CustomerPayload } from "@/lib/dto/customer";
 
-const customerSchema = z.object({
-  name: z.string().trim().min(1, "Nome é obrigatório"),
-  phone: z.string().trim().min(1, "Telefone é obrigatório"),
-  email: z.string().trim().email("E-mail inválido"),
-  city: z.string().trim().min(1, "Cidade é obrigatória"),
-  status: z.boolean(),
-});
+type Translator = (key: string, options?: { defaultMessage?: string }) => string;
 
-type NewCustomerFormValues = z.infer<typeof customerSchema>;
+const buildCustomerSchema = (t: Translator) =>
+  z.object({
+    name: z.string().trim().min(1, t("fields.name.required")),
+    phone: z.string().trim().min(1, t("fields.phone.required")),
+    email: z.string().trim().email(t("fields.email.invalid")),
+    city: z.string().trim().min(1, t("fields.city.required")),
+    status: z.boolean(),
+  });
+
+type NewCustomerFormValues = z.infer<ReturnType<typeof buildCustomerSchema>>;
 
 interface NewCustomerModalProps {
   onCreate: (payload: CustomerPayload) => Promise<unknown>;
@@ -52,8 +56,11 @@ interface NewCustomerModalProps {
 
 export function NewCustomerModal({
   onCreate,
-  triggerLabel = "Novo Customer",
+  triggerLabel,
 }: NewCustomerModalProps) {
+  const t = useTranslations("customersForm");
+  const customerSchema = useMemo(() => buildCustomerSchema(t), [t]);
+
   const [open, setOpen] = useState(false);
   const [submitError, setSubmitError] = useState<string | null>(null);
 
@@ -91,21 +98,21 @@ export function NewCustomerModal({
       form.reset();
       setOpen(false);
     } catch (_error) {
-      setSubmitError("Não foi possível criar o customer. Tente novamente.");
+      setSubmitError(t("feedback.submitError"));
     }
   };
+
+  const modalTriggerLabel = triggerLabel ?? t("trigger");
 
   return (
     <Dialog open={open} onOpenChange={handleOpenChange}>
       <DialogTrigger asChild>
-        <Button className="w-full sm:w-auto">{triggerLabel}</Button>
+        <Button className="w-full sm:w-auto">{modalTriggerLabel}</Button>
       </DialogTrigger>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>Novo Customer</DialogTitle>
-          <DialogDescription>
-            Preencha os dados para registrar um novo customer.
-          </DialogDescription>
+          <DialogTitle>{t("title")}</DialogTitle>
+          <DialogDescription>{t("description")}</DialogDescription>
         </DialogHeader>
 
         <Form {...form}>
@@ -118,9 +125,12 @@ export function NewCustomerModal({
               name="name"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Nome</FormLabel>
+                  <FormLabel>{t("fields.name.label")}</FormLabel>
                   <FormControl>
-                    <Input placeholder="Nome completo" {...field} />
+                    <Input
+                      placeholder={t("fields.name.placeholder")}
+                      {...field}
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -132,9 +142,12 @@ export function NewCustomerModal({
               name="phone"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Telefone</FormLabel>
+                  <FormLabel>{t("fields.phone.label")}</FormLabel>
                   <FormControl>
-                    <Input placeholder="(11) 99999-9999" {...field} />
+                    <Input
+                      placeholder={t("fields.phone.placeholder")}
+                      {...field}
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -146,9 +159,13 @@ export function NewCustomerModal({
               name="email"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>E-mail</FormLabel>
+                  <FormLabel>{t("fields.email.label")}</FormLabel>
                   <FormControl>
-                    <Input placeholder="contato@exemplo.com" {...field} />
+                    <Input
+                      placeholder={t("fields.email.placeholder")}
+                      type="email"
+                      {...field}
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -160,9 +177,12 @@ export function NewCustomerModal({
               name="city"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Cidade</FormLabel>
+                  <FormLabel>{t("fields.city.label")}</FormLabel>
                   <FormControl>
-                    <Input placeholder="São Paulo" {...field} />
+                    <Input
+                      placeholder={t("fields.city.placeholder")}
+                      {...field}
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -174,19 +194,25 @@ export function NewCustomerModal({
               name="status"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Status</FormLabel>
+                  <FormLabel>{t("fields.status.label")}</FormLabel>
                   <Select
                     value={field.value ? "true" : "false"}
                     onValueChange={(value) => field.onChange(value === "true")}
                   >
                     <FormControl>
                       <SelectTrigger className="w-full">
-                        <SelectValue placeholder="Selecione o status" />
+                        <SelectValue
+                          placeholder={t("fields.status.placeholder")}
+                        />
                       </SelectTrigger>
                     </FormControl>
                     <SelectContent>
-                      <SelectItem value="true">Ativo</SelectItem>
-                      <SelectItem value="false">Inativo</SelectItem>
+                      <SelectItem value="true">
+                        {t("fields.status.active")}
+                      </SelectItem>
+                      <SelectItem value="false">
+                        {t("fields.status.inactive")}
+                      </SelectItem>
                     </SelectContent>
                   </Select>
                   <FormMessage />
@@ -207,14 +233,14 @@ export function NewCustomerModal({
                   variant="outline"
                   disabled={form.formState.isSubmitting}
                 >
-                  Cancelar
+                  {t("actions.cancel")}
                 </Button>
               </DialogClose>
-              <Button type="submit" disabled={form.formState.isSubmitting} >
+              <Button type="submit" disabled={form.formState.isSubmitting}>
                 {form.formState.isSubmitting && (
                   <Spinner className="mr-2" aria-hidden />
                 )}
-                Criar
+                {t("actions.create")}
               </Button>
             </DialogFooter>
           </form>

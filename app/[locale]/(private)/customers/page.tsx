@@ -43,7 +43,10 @@ export default function CustomersPage() {
             <CardTitle className="text-2xl">{t("title")}</CardTitle>
             <CardDescription>{t("description")}</CardDescription>
           </div>
-          <NewCustomerModal onCreate={addCustomer} triggerLabel="Novo Customer" />
+          <NewCustomerModal
+            onCreate={addCustomer}
+            triggerLabel={t("addCustomer")}
+          />
         </CardHeader>
         <CardContent className="flex flex-col gap-4 flex-1 min-h-0">
           <Input

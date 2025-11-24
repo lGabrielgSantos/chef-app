@@ -57,7 +57,48 @@
     "empty": "Nenhum cliente encontrado.",
     "status": {
       "active": "Ativo",
-      "trial": "Em avaliacao"
+      "trial": "Em avaliacao",
+      "inactive": "Inativo"
+    }
+  },
+  "customersForm": {
+    "trigger": "Adicionar cliente",
+    "title": "Novo cliente",
+    "description": "Preencha os dados para registrar um novo cliente.",
+    "fields": {
+      "name": {
+        "label": "Nome",
+        "placeholder": "Nome completo",
+        "required": "Nome \u00e9 obrigat\u00f3rio"
+      },
+      "phone": {
+        "label": "Telefone",
+        "placeholder": "(11) 99999-9999",
+        "required": "Telefone \u00e9 obrigat\u00f3rio"
+      },
+      "email": {
+        "label": "E-mail",
+        "placeholder": "contato@exemplo.com",
+        "invalid": "Digite um e-mail v\u00e1lido"
+      },
+      "city": {
+        "label": "Cidade",
+        "placeholder": "S\u00e3o Paulo",
+        "required": "Cidade \u00e9 obrigat\u00f3ria"
+      },
+      "status": {
+        "label": "Status",
+        "placeholder": "Selecione o status",
+        "active": "Ativo",
+        "inactive": "Inativo"
+      }
+    },
+    "actions": {
+      "cancel": "Cancelar",
+      "create": "Criar"
+    },
+    "feedback": {
+      "submitError": "N\u00e3o foi poss\u00edvel criar o cliente. Tente novamente."
     }
   }
 }

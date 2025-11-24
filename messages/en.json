@@ -56,7 +56,48 @@
     "empty": "No customers found.",
     "status": {
       "active": "Active",
-      "trial": "Trial"
+      "trial": "Trial",
+      "inactive": "Inactive"
+    }
+  },
+  "customersForm": {
+    "trigger": "Add customer",
+    "title": "New customer",
+    "description": "Fill in the details to register a new customer.",
+    "fields": {
+      "name": {
+        "label": "Name",
+        "placeholder": "Full name",
+        "required": "Name is required"
+      },
+      "phone": {
+        "label": "Phone",
+        "placeholder": "(11) 99999-9999",
+        "required": "Phone is required"
+      },
+      "email": {
+        "label": "Email",
+        "placeholder": "contact@example.com",
+        "invalid": "Enter a valid email"
+      },
+      "city": {
+        "label": "City",
+        "placeholder": "Sao Paulo",
+        "required": "City is required"
+      },
+      "status": {
+        "label": "Status",
+        "placeholder": "Select a status",
+        "active": "Active",
+        "inactive": "Inactive"
+      }
+    },
+    "actions": {
+      "cancel": "Cancel",
+      "create": "Create"
+    },
+    "feedback": {
+      "submitError": "Could not create the customer. Please try again."
     }
   }
 }
