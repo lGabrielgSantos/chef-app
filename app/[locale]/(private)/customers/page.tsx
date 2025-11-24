@@ -38,7 +38,7 @@ export default function CustomersPage() {
 
   return (
     <div className="flex flex-col gap-6">
-      <Card  className="h-[85vh] flex flex-col">
+      <Card className="h-[85vh] flex flex-col">
         <CardHeader className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
           <div className="space-y-1">
             <CardTitle className="text-2xl">{t("title")}</CardTitle>
@@ -70,7 +70,7 @@ export default function CustomersPage() {
             </p>
           )}
 
-          <ScrollArea className="h-[60vh] pr-1">
+          <ScrollArea className="h-[90%] pr-1">
 
             <div className="space-y-3">
               {filteredCustomers.map((customer) => (
@@ -81,7 +81,7 @@ export default function CustomersPage() {
                   onEdit={editCustomer}
                   editLabel={formT("actions.edit")}
                 />
-           
+
               ))}
 
               {!loading && filteredCustomers.length === 0 && (
