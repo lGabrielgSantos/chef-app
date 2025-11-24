@@ -1,15 +1,24 @@
 import { Avatar, AvatarFallback } from "./ui/avatar";
-import type { Customer, CustomerStatus } from "@/lib/dto/customer";
+import NewCustomerModal from "./NewCustomerModal";
+import type {
+  Customer,
+  CustomerPayload,
+  CustomerStatus,
+} from "@/lib/dto/customer";
 
 interface NewCustomerCardProps {
   customer: Customer;
   t?: (key: string, options?: { defaultMessage?: string }) => string;
+  onEdit?: (id: string, data: Partial<CustomerPayload>) => Promise<unknown>;
+  editLabel?: string;
 }
 
 export default function NewCustomerCard({
   customer,
   t = (key: string, options?: { defaultMessage?: string }) =>
     options?.defaultMessage ?? key,
+  onEdit,
+  editLabel,
 }: NewCustomerCardProps) {
     const formatStatus = (status?: CustomerStatus | null) => {
         const statusKey = status ?? "active";
@@ -63,6 +72,18 @@ export default function NewCustomerCard({
                 <span className={`self-start rounded-full px-3 py-1 text-xs font-semibold sm:self-auto ${getStatusStyles(customer.status)}`}>
                     {formatStatus(customer.status)}
                 </span>
+                {onEdit && (
+                  <NewCustomerModal
+                    customer={customer}
+                    onSubmit={(payload) => onEdit(customer.id, payload)}
+                    triggerLabel={editLabel ?? "Edit"}
+                    triggerButtonProps={{
+                      variant: "outline",
+                      size: "sm",
+                      className: "w-auto h-8 px-3",
+                    }}
+                  />
+                )}
             </div>
         </div>
     )

@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState, type ComponentProps } from "react";
 import { useTranslations } from "next-intl";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
@@ -34,7 +34,8 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Spinner } from "@/components/ui/spinner";
-import type { CustomerPayload } from "@/lib/dto/customer";
+import type { Customer, CustomerPayload } from "@/lib/dto/customer";
+import { cn } from "@/lib/utils";
 
 type Translator = (key: string, options?: { defaultMessage?: string }) => string;
 
@@ -44,41 +45,55 @@ const buildCustomerSchema = (t: Translator) =>
     phone: z.string().trim().min(1, t("fields.phone.required")),
     email: z.string().trim().email(t("fields.email.invalid")),
     city: z.string().trim().min(1, t("fields.city.required")),
-    status: z.boolean(),
+    status: z.enum(["active", "trial", "inactive"]),
   });
 
 type NewCustomerFormValues = z.infer<ReturnType<typeof buildCustomerSchema>>;
 
 interface NewCustomerModalProps {
-  onCreate: (payload: CustomerPayload) => Promise<unknown>;
+  onSubmit: (payload: CustomerPayload, id?: string) => Promise<unknown>;
   triggerLabel?: string;
+  customer?: Customer;
+  triggerButtonProps?: ComponentProps<typeof Button>;
 }
 
 export function NewCustomerModal({
-  onCreate,
+  onSubmit,
   triggerLabel,
+  customer,
+  triggerButtonProps,
 }: NewCustomerModalProps) {
   const t = useTranslations("customersForm");
   const customerSchema = useMemo(() => buildCustomerSchema(t), [t]);
+  const isEditMode = Boolean(customer);
 
   const [open, setOpen] = useState(false);
   const [submitError, setSubmitError] = useState<string | null>(null);
 
+  const initialValues = useMemo<NewCustomerFormValues>(
+    () => ({
+      name: customer?.name ?? "",
+      phone: customer?.phone ?? "",
+      email: customer?.email ?? "",
+      city: customer?.city ?? "",
+      status: customer?.status ?? "active",
+    }),
+    [customer]
+  );
+
   const form = useForm<NewCustomerFormValues>({
     resolver: zodResolver(customerSchema),
-    defaultValues: {
-      name: "",
-      phone: "",
-      email: "",
-      city: "",
-      status: true,
-    },
+    defaultValues: initialValues,
   });
+
+  useEffect(() => {
+    form.reset(initialValues);
+  }, [form, initialValues]);
 
   const handleOpenChange = (nextOpen: boolean) => {
     setOpen(nextOpen);
     if (!nextOpen) {
-      form.reset();
+      form.reset(initialValues);
       setSubmitError(null);
     }
   };
@@ -90,29 +105,43 @@ export function NewCustomerModal({
       phone: values.phone,
       email: values.email,
       city: values.city,
-      status: values.status ? "active" : "inactive",
+      status: values.status,
     };
 
     try {
-      await onCreate(payload);
-      form.reset();
+      await onSubmit(payload, customer?.id);
+      form.reset(initialValues);
       setOpen(false);
     } catch (_error) {
-      setSubmitError(t("feedback.submitError"));
+      setSubmitError(
+        isEditMode ? t("feedback.updateError") : t("feedback.submitError")
+      );
     }
   };
 
-  const modalTriggerLabel = triggerLabel ?? t("trigger");
+  const modalTriggerLabel =
+    triggerLabel ?? t(isEditMode ? "actions.edit" : "trigger");
+
+  const triggerClassName = cn(
+    "w-full sm:w-auto",
+    triggerButtonProps?.className
+  );
+  const dialogTitle = isEditMode ? t("editTitle") : t("title");
+  const dialogDescription = isEditMode
+    ? t("editDescription")
+    : t("description");
 
   return (
     <Dialog open={open} onOpenChange={handleOpenChange}>
       <DialogTrigger asChild>
-        <Button className="w-full sm:w-auto">{modalTriggerLabel}</Button>
+        <Button className={triggerClassName} {...triggerButtonProps}>
+          {modalTriggerLabel}
+        </Button>
       </DialogTrigger>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>{t("title")}</DialogTitle>
-          <DialogDescription>{t("description")}</DialogDescription>
+          <DialogTitle>{dialogTitle}</DialogTitle>
+          <DialogDescription>{dialogDescription}</DialogDescription>
         </DialogHeader>
 
         <Form {...form}>
@@ -196,8 +225,8 @@ export function NewCustomerModal({
                 <FormItem>
                   <FormLabel>{t("fields.status.label")}</FormLabel>
                   <Select
-                    value={field.value ? "true" : "false"}
-                    onValueChange={(value) => field.onChange(value === "true")}
+                    value={field.value}
+                    onValueChange={field.onChange}
                   >
                     <FormControl>
                       <SelectTrigger className="w-full">
@@ -207,10 +236,15 @@ export function NewCustomerModal({
                       </SelectTrigger>
                     </FormControl>
                     <SelectContent>
-                      <SelectItem value="true">
+                      <SelectItem value="active">
                         {t("fields.status.active")}
                       </SelectItem>
-                      <SelectItem value="false">
+                      <SelectItem value="trial">
+                        {t("fields.status.trial", {
+                          defaultMessage: "Trial",
+                        })}
+                      </SelectItem>
+                      <SelectItem value="inactive">
                         {t("fields.status.inactive")}
                       </SelectItem>
                     </SelectContent>
@@ -240,7 +274,7 @@ export function NewCustomerModal({
                 {form.formState.isSubmitting && (
                   <Spinner className="mr-2" aria-hidden />
                 )}
-                {t("actions.create")}
+                {t(isEditMode ? "actions.save" : "actions.create")}
               </Button>
             </DialogFooter>
           </form>

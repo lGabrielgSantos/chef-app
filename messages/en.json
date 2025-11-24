@@ -63,6 +63,8 @@
   "customersForm": {
     "trigger": "Add customer",
     "title": "New customer",
+    "editTitle": "Edit customer",
+    "editDescription": "Update the customer information.",
     "description": "Fill in the details to register a new customer.",
     "fields": {
       "name": {
@@ -89,15 +91,19 @@
         "label": "Status",
         "placeholder": "Select a status",
         "active": "Active",
+        "trial": "Trial",
         "inactive": "Inactive"
       }
     },
     "actions": {
       "cancel": "Cancel",
-      "create": "Create"
+      "create": "Create",
+      "save": "Save changes",
+      "edit": "Edit"
     },
     "feedback": {
-      "submitError": "Could not create the customer. Please try again."
+      "submitError": "Could not create the customer. Please try again.",
+      "updateError": "Could not update the customer. Please try again."
     }
   }
 }

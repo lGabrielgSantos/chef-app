@@ -20,7 +20,8 @@ import NewCustomerCard from "@/components/NewCustomerCard";
 
 export default function CustomersPage() {
   const t = useTranslations("customersPage");
-  const { customers, loading, error, addCustomer } = useCustomers();
+  const formT = useTranslations("customersForm");
+  const { customers, loading, error, addCustomer, editCustomer } = useCustomers();
   const [searchTerm, setSearchTerm] = useState("");
 
   const filteredCustomers = useMemo(() => {
@@ -44,7 +45,7 @@ export default function CustomersPage() {
             <CardDescription>{t("description")}</CardDescription>
           </div>
           <NewCustomerModal
-            onCreate={addCustomer}
+            onSubmit={addCustomer}
             triggerLabel={t("addCustomer")}
           />
         </CardHeader>
@@ -73,7 +74,13 @@ export default function CustomersPage() {
 
             <div className="space-y-3">
               {filteredCustomers.map((customer) => (
-                <NewCustomerCard key={customer.id ?? customer.email} customer={customer} t={t} />
+                <NewCustomerCard
+                  key={customer.id ?? customer.email}
+                  customer={customer}
+                  t={t}
+                  onEdit={editCustomer}
+                  editLabel={formT("actions.edit")}
+                />
            
               ))}
 
