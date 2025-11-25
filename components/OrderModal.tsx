@@ -27,34 +27,47 @@ import {
 } from "./ui/form"
 import { Input } from "./ui/input"
 import { Spinner } from "./ui/spinner"
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "./ui/select"
 import type { Order, OrderPayload } from "@/lib/dto/order"
+import { useCustomers } from "@/lib/hooks/useCustomers"
+import { useProducts } from "@/lib/hooks/useProducts"
 import { cn } from "@/lib/utils"
 
 type Translator = (key: string, options?: { defaultMessage?: string }) => string
 
 const buildOrderSchema = (t: Translator) =>
   z.object({
-    customerId: z.string().trim().min(1, t("fields.customerId.required")),
-    orderDate: z.string().trim().optional(),
-    total: z.coerce
-      .number({
-        required_error: t("fields.total.required"),
-        invalid_type_error: t("fields.total.required"),
+    customerId: z
+      .string({
+        required_error: t("fields.customer.required"),
+        invalid_type_error: t("fields.customer.required"),
       })
-      .min(0, t("fields.total.min")),
+      .min(1, t("fields.customer.required")),
     items: z
       .array(
         z.object({
           id: z.string().optional(),
-          productId: z.string().trim().optional().or(z.literal("")),
+          productId: z
+            .string({
+              required_error: t("fields.product.required"),
+              invalid_type_error: t("fields.product.required"),
+            })
+            .min(1, t("fields.product.required")),
           quantity: z.coerce
             .number({
-              invalid_type_error: t("fields.items.quantity.required"),
+              invalid_type_error: t("fields.quantity.required"),
+              required_error: t("fields.quantity.required"),
             })
-            .min(1, t("fields.items.quantity.min")),
+            .min(1, t("fields.quantity.min")),
         }),
       )
-      .optional(),
+      .min(1, t("fields.items.required")),
   })
 
 type OrderFormValues = z.infer<ReturnType<typeof buildOrderSchema>>
@@ -76,14 +89,18 @@ export function OrderModal({
   const orderSchema = useMemo(() => buildOrderSchema(t), [t])
   const isEditMode = Boolean(order)
 
+  const { customers, loading: customersLoading } = useCustomers()
+  const { products, loading: productsLoading } = useProducts()
+
   const [open, setOpen] = useState(false)
   const [submitError, setSubmitError] = useState<string | null>(null)
+  const [itemError, setItemError] = useState<string | null>(null)
+  const [selectedProductId, setSelectedProductId] = useState("")
+  const [selectedQuantity, setSelectedQuantity] = useState<number>(1)
 
   const initialValues = useMemo<OrderFormValues>(
     () => ({
-      customerId: order?.customerId ?? "",
-      orderDate: order?.orderDate?.split("T")?.[0] ?? "",
-      total: order?.total ?? 0,
+      customerId: order?.customerId ? String(order.customerId) : "",
       items:
         order?.orderItems?.map((item) => ({
           id: item.id,
@@ -104,8 +121,44 @@ export function OrderModal({
     name: "items",
   })
 
+  const productMap = useMemo(
+    () => new Map(products.map((product) => [product.id, product])),
+    [products],
+  )
+
+  const currencyFormatter = useMemo(
+    () =>
+      new Intl.NumberFormat(undefined, {
+        style: "currency",
+        currency: "USD",
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2,
+      }),
+    [],
+  )
+
+  const watchedItems = form.watch("items") ?? []
+
+  const itemsError =
+    (form.formState.errors.items as { message?: string } | undefined)?.message ??
+    (form.formState.errors.items as { root?: { message?: string } } | undefined)
+      ?.root?.message
+
+  const orderTotal = useMemo(
+    () =>
+      watchedItems.reduce((total, item) => {
+        const product = productMap.get(item.productId ?? "")
+        const price = product?.price ?? 0
+        return total + (item.quantity ?? 0) * price
+      }, 0),
+    [productMap, watchedItems],
+  )
+
   useEffect(() => {
     form.reset(initialValues)
+    setSelectedProductId("")
+    setSelectedQuantity(1)
+    setItemError(null)
   }, [form, initialValues])
 
   const handleOpenChange = (nextOpen: boolean) => {
@@ -113,26 +166,57 @@ export function OrderModal({
     if (!nextOpen) {
       form.reset(initialValues)
       setSubmitError(null)
+      setItemError(null)
+      setSelectedProductId("")
+      setSelectedQuantity(1)
     }
+  }
+
+  const handleAddItem = () => {
+    setItemError(null)
+
+    if (!selectedProductId) {
+      setItemError(t("fields.product.required"))
+      return
+    }
+
+    if (!selectedQuantity || selectedQuantity < 1) {
+      setItemError(t("fields.quantity.min"))
+      return
+    }
+
+    const currentItems = form.getValues("items") ?? []
+    const existingIndex = currentItems.findIndex(
+      (item) => item.productId === selectedProductId,
+    )
+
+    if (existingIndex >= 0) {
+      const currentQuantity =
+        form.getValues(`items.${existingIndex}.quantity`) ?? 0
+      form.setValue(
+        `items.${existingIndex}.quantity`,
+        currentQuantity + selectedQuantity,
+      )
+    } else {
+      append({ productId: selectedProductId, quantity: selectedQuantity })
+    }
+
+    setSelectedProductId("")
+    setSelectedQuantity(1)
   }
 
   const handleSubmit = async (values: OrderFormValues) => {
     setSubmitError(null)
 
-    const normalizedItems =
-      values.items
-        ?.map((item) => ({
-          id: item.id,
-          productId: item.productId?.trim() || null,
-          quantity: item.quantity ?? 0,
-        }))
-        .filter((item) => item.productId || item.quantity > 0) ?? []
-
     const payload: OrderPayload = {
-      customerId: values.customerId.trim(),
-      orderDate: values.orderDate ? new Date(values.orderDate).toISOString() : null,
-      total: values.total ?? 0,
-      items: normalizedItems,
+      customerId: Number(values.customerId) || null,
+      orderDate: order?.orderDate ?? null,
+      total: orderTotal,
+      items: values.items.map((item) => ({
+        id: item.id,
+        productId: item.productId,
+        quantity: item.quantity,
+      })),
     }
 
     try {
@@ -172,145 +256,205 @@ export function OrderModal({
         </DialogHeader>
 
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-4">
-            <FormField
-              control={form.control}
-              name="customerId"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>{t("fields.customerId.label")}</FormLabel>
-                  <FormControl>
-                    <Input
-                      placeholder={t("fields.customerId.placeholder")}
-                      {...field}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+          <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-6">
+            <section className="space-y-3 rounded-lg border p-4">
+              <p className="text-sm font-medium text-foreground">
+                {t("sections.customer")}
+              </p>
+              <FormField
+                control={form.control}
+                name="customerId"
+                render={({ field }) => (
+                  <FormItem className="space-y-2">
+                    <FormLabel>{t("fields.customer.label")}</FormLabel>
+                    <FormControl>
+                      <Select
+                        value={field.value}
+                        onValueChange={field.onChange}
+                        disabled={customersLoading}
+                      >
+                        <SelectTrigger className="w-full">
+                          <SelectValue placeholder={t("fields.customer.placeholder")} />
+                        </SelectTrigger>
+                        <SelectContent align="start">
+                          {customers.map((customer) => (
+                            <SelectItem key={customer.id} value={customer.id}>
+                              {customer.name}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </section>
 
-            <FormField
-              control={form.control}
-              name="orderDate"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>{t("fields.orderDate.label")}</FormLabel>
-                  <FormControl>
-                    <Input
-                      type="date"
-                      placeholder={t("fields.orderDate.placeholder")}
-                      {...field}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+            <section className="space-y-3 rounded-lg border p-4">
+              <p className="text-sm font-medium text-foreground">
+                {t("sections.product")}
+              </p>
 
-            <FormField
-              control={form.control}
-              name="total"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>{t("fields.total.label")}</FormLabel>
-                  <FormControl>
-                    <Input
-                      type="number"
-                      step="0.01"
-                      min={0}
-                      placeholder={t("fields.total.placeholder")}
-                      {...field}
-                      onChange={(event) => field.onChange(event.target.valueAsNumber)}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+              <div className="grid gap-3 sm:grid-cols-[1fr_auto_auto] sm:items-end">
+                <div className="space-y-2">
+                  <FormLabel>{t("fields.product.label")}</FormLabel>
+                  <Select
+                    value={selectedProductId}
+                    onValueChange={(value) => {
+                      setSelectedProductId(value)
+                      setItemError(null)
+                    }}
+                    disabled={productsLoading}
+                  >
+                    <SelectTrigger className="w-full">
+                      <SelectValue placeholder={t("fields.product.placeholder")} />
+                    </SelectTrigger>
+                    <SelectContent align="start">
+                      {products.map((product) => (
+                        <SelectItem key={product.id} value={product.id}>
+                          <div className="flex flex-col text-left">
+                            <span className="font-medium text-foreground">
+                              {product.name}
+                            </span>
+                            <span className="text-xs text-muted-foreground">
+                              {currencyFormatter.format(product.price)}
+                            </span>
+                          </div>
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
 
-            <div className="space-y-3 rounded-lg border p-3">
-              <div className="flex items-center justify-between">
-                <FormLabel className="text-sm font-medium">
-                  {t("fields.items.label")}
-                </FormLabel>
+                <div className="space-y-2">
+                  <FormLabel>{t("fields.quantity.label")}</FormLabel>
+                  <Input
+                    type="number"
+                    min={1}
+                    value={Number.isNaN(selectedQuantity) ? "" : selectedQuantity}
+                    onChange={(event) =>
+                      setSelectedQuantity(event.target.valueAsNumber || 1)
+                    }
+                  />
+                </div>
+
                 <Button
                   type="button"
-                  variant="secondary"
-                  size="sm"
-                  onClick={() => append({ productId: "", quantity: 1 })}
+                  className="w-full sm:w-auto"
+                  onClick={handleAddItem}
+                  disabled={productsLoading || customersLoading}
                 >
-                  {t("fields.items.add")}
+                  {productsLoading && <Spinner className="mr-2" aria-hidden />}
+                  {t("actions.addItem")}
                 </Button>
               </div>
 
-              {fields.length === 0 && (
-                <p className="text-sm text-muted-foreground">
-                  {t("fields.items.empty")}
+              {itemError && (
+                <p className="text-sm text-destructive" role="alert">
+                  {itemError}
                 </p>
               )}
 
-              <div className="space-y-3">
-                {fields.map((field, index) => (
-                  <div
-                    key={field.id}
-                    className="grid grid-cols-1 gap-2 rounded-md border p-3 sm:grid-cols-[1fr_auto_auto]"
-                  >
-                    <FormField
-                      control={form.control}
-                      name={`items.${index}.productId`}
-                      render={({ field }) => (
-                        <FormItem className="space-y-1">
-                          <FormLabel className="text-xs text-muted-foreground">
-                            {t("fields.items.product")}
-                          </FormLabel>
-                          <FormControl>
-                            <Input
-                              placeholder={t("fields.items.productPlaceholder")}
-                              {...field}
-                            />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
+              <div className="space-y-2">
+                <FormLabel>{t("fields.items.label")}</FormLabel>
+                {itemsError && (
+                  <p className="text-sm text-destructive" role="alert">
+                    {itemsError}
+                  </p>
+                )}
 
-                    <FormField
-                      control={form.control}
-                      name={`items.${index}.quantity`}
-                      render={({ field }) => (
-                        <FormItem className="space-y-1">
-                          <FormLabel className="text-xs text-muted-foreground">
-                            {t("fields.items.quantity.label")}
-                          </FormLabel>
-                          <FormControl>
-                            <Input
-                              type="number"
-                              min={1}
-                              {...field}
-                              onChange={(event) => field.onChange(event.target.valueAsNumber)}
-                            />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
+                {fields.length === 0 ? (
+                  <p className="text-sm text-muted-foreground">
+                    {t("fields.items.empty")}
+                  </p>
+                ) : (
+                  <div className="overflow-hidden rounded-md border">
+                    <table className="w-full text-sm">
+                      <thead className="bg-muted/50">
+                        <tr>
+                          <th className="px-3 py-2 text-left font-medium text-foreground">
+                            {t("fields.items.table.product")}
+                          </th>
+                          <th className="px-3 py-2 text-left font-medium text-foreground">
+                            {t("fields.items.table.qty")}
+                          </th>
+                          <th className="px-3 py-2 text-right font-medium text-foreground">
+                            {t("fields.items.table.price")}
+                          </th>
+                          <th className="px-3 py-2 text-right font-medium text-foreground">
+                            {t("fields.items.table.total")}
+                          </th>
+                          <th className="px-3 py-2 text-right font-medium text-foreground" />
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {fields.map((field, index) => {
+                          const product = productMap.get(field.productId ?? "")
+                          const unitPrice = product?.price ?? 0
+                          const quantityValue =
+                            form.watch(`items.${index}.quantity`) ??
+                            field.quantity ??
+                            0
 
-                    <div className="flex items-end">
-                      <Button
-                        type="button"
-                        variant="ghost"
-                        size="sm"
-                        onClick={() => remove(index)}
-                        className="w-full sm:w-auto"
-                      >
-                        {t("fields.items.remove")}
-                      </Button>
-                    </div>
+                          return (
+                            <tr key={field.id} className="border-b last:border-0">
+                              <td className="px-3 py-2 font-medium text-foreground">
+                                {product?.name ??
+                                  t("fields.items.table.unknownProduct", {
+                                    defaultMessage: "Product",
+                                  })}
+                              </td>
+                              <td className="px-3 py-2">
+                                <FormField
+                                  control={form.control}
+                                  name={`items.${index}.quantity`}
+                                  render={({ field }) => (
+                                    <FormItem className="mb-0">
+                                      <FormControl>
+                                        <Input
+                                          type="number"
+                                          min={1}
+                                          {...field}
+                                          onChange={(event) =>
+                                            field.onChange(
+                                              event.target.valueAsNumber || 1,
+                                            )
+                                          }
+                                        />
+                                      </FormControl>
+                                      <FormMessage />
+                                    </FormItem>
+                                  )}
+                                />
+                              </td>
+                              <td className="px-3 py-2 text-right text-muted-foreground">
+                                {currencyFormatter.format(unitPrice)}
+                              </td>
+                              <td className="px-3 py-2 text-right font-medium">
+                                {currencyFormatter.format(
+                                  unitPrice * (quantityValue ?? 0),
+                                )}
+                              </td>
+                              <td className="px-3 py-2 text-right">
+                                <Button
+                                  type="button"
+                                  variant="ghost"
+                                  size="sm"
+                                  onClick={() => remove(index)}
+                                >
+                                  {t("fields.items.remove")}
+                                </Button>
+                              </td>
+                            </tr>
+                          )
+                        })}
+                      </tbody>
+                    </table>
                   </div>
-                ))}
+                )}
               </div>
-            </div>
+            </section>
 
             {submitError && (
               <p className="text-sm text-destructive" role="alert">
@@ -318,20 +462,26 @@ export function OrderModal({
               </p>
             )}
 
-            <DialogFooter className="gap-2">
-              <DialogClose asChild>
-                <Button
-                  type="button"
-                  variant="outline"
-                  disabled={form.formState.isSubmitting}
-                >
-                  {t("actions.cancel")}
+            <DialogFooter className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+              <div className="flex w-full items-center justify-between rounded-md bg-muted/60 px-4 py-3 text-sm font-semibold">
+                <span>{t("summary.total")}</span>
+                <span>{currencyFormatter.format(orderTotal)}</span>
+              </div>
+              <div className="flex w-full justify-end gap-2 sm:w-auto">
+                <DialogClose asChild>
+                  <Button
+                    type="button"
+                    variant="outline"
+                    disabled={form.formState.isSubmitting}
+                  >
+                    {t("actions.cancel")}
+                  </Button>
+                </DialogClose>
+                <Button type="submit" disabled={form.formState.isSubmitting}>
+                  {form.formState.isSubmitting && <Spinner className="mr-2" aria-hidden />}
+                  {t(isEditMode ? "actions.save" : "actions.saveOrder")}
                 </Button>
-              </DialogClose>
-              <Button type="submit" disabled={form.formState.isSubmitting}>
-                {form.formState.isSubmitting && <Spinner className="mr-2" aria-hidden />}
-                {t(isEditMode ? "actions.save" : "actions.create")}
-              </Button>
+              </div>
             </DialogFooter>
           </form>
         </Form>

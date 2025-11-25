@@ -31,13 +31,13 @@ export interface OrderDTO {
 
 export interface OrderItem {
   id: string
-  orderId?: string | null
+  orderId?: number | null
   productId?: string | null
   quantity: number
 }
 
 export interface OrderPayload {
-  customerId?: string | null
+  customerId?: number | null
   orderDate?: string | null
   total?: number | null
   items?: Array<{
@@ -52,6 +52,20 @@ export interface Order extends OrderPayload {
   createdAt?: string | null
   updatedAt?: string | null
   orderItems?: OrderItem[]
+}
+
+function toNumericOrNull(value: string | number | null | undefined): number | null {
+  if (value === null || value === undefined) {
+    return null
+  }
+  if (typeof value === "number") {
+    return value
+  }
+  if (typeof value === "string") {
+    const parsed = parseFloat(value)
+    return Number.isFinite(parsed) ? parsed : null
+  }
+  return null
 }
 
 function toNumeric(value: string | number | null | undefined): number {
@@ -74,9 +88,9 @@ export function orderItemFromDto(payload: OrderItemDTO): OrderItem {
     id: String(payload.id ?? payload._id ?? ""),
     orderId:
       payload.order_id !== undefined && payload.order_id !== null
-        ? String(payload.order_id)
+        ? toNumericOrNull(payload.order_id)
         : payload.orderId !== undefined && payload.orderId !== null
-          ? String(payload.orderId)
+          ? toNumericOrNull(payload.orderId)
           : null,
     productId:
       payload.product_id !== undefined && payload.product_id !== null
@@ -99,9 +113,9 @@ export function orderFromDto(payload: OrderDTO): Order {
     id: String(payload.id ?? payload._id ?? ""),
     customerId:
       payload.customer_id !== undefined && payload.customer_id !== null
-        ? String(payload.customer_id)
+        ? toNumericOrNull(payload.customer_id)
         : payload.customerId !== undefined && payload.customerId !== null
-          ? String(payload.customerId)
+          ? toNumericOrNull(payload.customerId)
           : null,
     orderDate: payload.order_date ?? payload.orderDate ?? null,
     total: toNumeric(payload.total),

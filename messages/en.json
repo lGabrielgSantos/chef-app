@@ -76,43 +76,51 @@
     "trigger": "New order",
     "title": "New order",
     "editTitle": "Edit order",
-    "editDescription": "Update the order information.",
-    "description": "Fill in the details to create a new order.",
+    "editDescription": "Update the customer or items for this order.",
+    "description": "Select a customer and add products to build the order.",
+    "sections": {
+      "customer": "Customer selection",
+      "product": "Product selection"
+    },
     "fields": {
-      "customerId": {
-        "label": "Customer ID",
-        "placeholder": "123",
+      "customer": {
+        "label": "Customer",
+        "placeholder": "Select a customer",
         "required": "Customer is required"
       },
-      "orderDate": {
-        "label": "Order date",
-        "placeholder": "Select a date"
+      "product": {
+        "label": "Product",
+        "placeholder": "Select a product",
+        "required": "Select a product to add"
       },
-      "total": {
-        "label": "Total",
-        "placeholder": "0.00",
-        "required": "Total is required",
-        "min": "Total cannot be negative"
+      "quantity": {
+        "label": "Quantity",
+        "required": "Quantity is required",
+        "min": "Quantity must be at least 1"
       },
       "items": {
-        "label": "Items",
-        "add": "Add item",
+        "label": "Items added",
         "empty": "No items added yet.",
-        "product": "Product ID",
-        "productPlaceholder": "Product identifier",
-        "quantity": {
-          "label": "Qty",
-          "required": "Quantity is required",
-          "min": "Quantity must be at least 1"
-        },
-        "remove": "Remove"
+        "required": "Add at least one item to the order.",
+        "remove": "Remove",
+        "table": {
+          "product": "Product",
+          "qty": "Qty",
+          "price": "Unit price",
+          "total": "Total",
+          "unknownProduct": "Product"
+        }
       }
+    },
+    "summary": {
+      "total": "Order total"
     },
     "actions": {
       "cancel": "Cancel",
-      "create": "Create",
+      "saveOrder": "Save order",
       "save": "Save changes",
-      "edit": "Edit"
+      "edit": "Edit",
+      "addItem": "Add item"
     },
     "feedback": {
       "submitError": "Could not create the order. Please try again.",
