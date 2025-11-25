@@ -51,6 +51,74 @@
       "limits": "Limites"
     }
   },
+  "ordersPage": {
+    "title": "Pedidos",
+    "description": "Acompanhe pedidos de clientes, totais e prazos.",
+    "addOrder": "Criar pedido",
+    "searchPlaceholder": "Buscar por ID, cliente ou data",
+    "loading": "Carregando pedidos...",
+    "error": "Nǜo foi poss��vel carregar os pedidos. Tente novamente.",
+    "empty": "Nenhum pedido encontrado.",
+    "card": {
+      "id": "Pedido",
+      "items": "itens",
+      "customer": "Cliente",
+      "noCustomer": "Sem cliente vinculado",
+      "date": "Data do pedido",
+      "noDate": "Data nǜo definida",
+      "total": "Total",
+      "summary": "Itens",
+      "itemSummary": "{count} itens",
+      "emptyItems": "Nenhum item"
+    }
+  },
+  "ordersForm": {
+    "trigger": "Novo pedido",
+    "title": "Novo pedido",
+    "editTitle": "Editar pedido",
+    "editDescription": "Atualize as informa����es do pedido.",
+    "description": "Preencha os dados para criar um pedido.",
+    "fields": {
+      "customerId": {
+        "label": "ID do cliente",
+        "placeholder": "123",
+        "required": "Cliente Ǹ obrigat��rio"
+      },
+      "orderDate": {
+        "label": "Data do pedido",
+        "placeholder": "Selecione a data"
+      },
+      "total": {
+        "label": "Total",
+        "placeholder": "0,00",
+        "required": "Total Ǹ obrigat��rio",
+        "min": "Total nǜo pode ser negativo"
+      },
+      "items": {
+        "label": "Itens",
+        "add": "Adicionar item",
+        "empty": "Nenhum item adicionado ainda.",
+        "product": "ID do produto",
+        "productPlaceholder": "Identificador do produto",
+        "quantity": {
+          "label": "Qtd",
+          "required": "Quantidade Ǹ obrigat��ria",
+          "min": "Quantidade m��nima Ǹ 1"
+        },
+        "remove": "Remover"
+      }
+    },
+    "actions": {
+      "cancel": "Cancelar",
+      "create": "Criar",
+      "save": "Salvar",
+      "edit": "Editar"
+    },
+    "feedback": {
+      "submitError": "Nǜo foi poss��vel criar o pedido. Tente novamente.",
+      "updateError": "Nǜo foi poss��vel atualizar o pedido. Tente novamente."
+    }
+  },
   "productsPage": {
     "title": "Produtos",
     "description": "Gerencie seu catálogo de produtos e preços.",
