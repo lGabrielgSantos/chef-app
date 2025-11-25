@@ -23,6 +23,7 @@
     "main": {
       "dashboard": "Painel",
       "orders": "Pedidos",
+      "products": "Produtos",
       "customers": "Clientes",
       "settings": "Configurações"
     },
@@ -35,16 +36,63 @@
       "history": "Histórico",
       "new": "Novo Pedido"
     },
+    "products": {
+      "new": "Novo Produto",
+      "list": "Lista de Produtos"
+    },
     "customers": {
       "new": "Novo Cliente",
       "list": "Lista de Clientes"
     },
-
     "settings": {
       "general": "Geral",
       "team": "Equipe",
       "billing": "Faturamento",
       "limits": "Limites"
+    }
+  },
+  "productsPage": {
+    "title": "Produtos",
+    "description": "Gerencie seu catálogo de produtos e preços.",
+    "addProduct": "Adicionar produto",
+    "searchPlaceholder": "Buscar por nome ou descrição",
+    "loading": "Carregando produtos...",
+    "error": "Não foi possível carregar os produtos. Tente novamente.",
+    "empty": "Nenhum produto encontrado."
+  },
+  "productsForm": {
+    "trigger": "Adicionar produto",
+    "title": "Novo produto",
+    "editTitle": "Editar produto",
+    "editDescription": "Atualize as informações do produto.",
+    "description": "Preencha os dados para registrar um novo produto.",
+    "fields": {
+      "name": {
+        "label": "Nome",
+        "placeholder": "Nome do produto",
+        "required": "Nome é obrigatório"
+      },
+      "price": {
+        "label": "Preço",
+        "placeholder": "0,00",
+        "required": "Preço é obrigatório",
+        "min": "Preço não pode ser negativo"
+      },
+      "description": {
+        "label": "Descrição",
+        "placeholder": "Descrição curta",
+        "max": "A descrição deve ter no máximo 500 caracteres"
+      }
+    },
+    "actions": {
+      "cancel": "Cancelar",
+      "create": "Criar",
+      "save": "Salvar",
+      "edit": "Editar"
+    },
+    "feedback": {
+      "submitError": "Não foi possível criar o produto. Tente novamente.",
+      "updateError": "Não foi possível atualizar o produto. Tente novamente."
     }
   },
   "customersPage": {
@@ -53,11 +101,11 @@
     "addCustomer": "Adicionar cliente",
     "searchPlaceholder": "Buscar por nome ou email",
     "loading": "Carregando clientes...",
-    "error": "N\u00e3o foi poss\u00edvel carregar os clientes. Tente novamente.",
+    "error": "Não foi possível carregar os clientes. Tente novamente.",
     "empty": "Nenhum cliente encontrado.",
     "status": {
       "active": "Ativo",
-      "trial": "Em avaliacao",
+      "trial": "Em avaliação",
       "inactive": "Inativo"
     }
   },
@@ -65,34 +113,34 @@
     "trigger": "Adicionar cliente",
     "title": "Novo cliente",
     "editTitle": "Editar cliente",
-    "editDescription": "Atualize as informacoes do cliente.",
+    "editDescription": "Atualize as informações do cliente.",
     "description": "Preencha os dados para registrar um novo cliente.",
     "fields": {
       "name": {
         "label": "Nome",
         "placeholder": "Nome completo",
-        "required": "Nome \u00e9 obrigat\u00f3rio"
+        "required": "Nome é obrigatório"
       },
       "phone": {
         "label": "Telefone",
         "placeholder": "(11) 99999-9999",
-        "required": "Telefone \u00e9 obrigat\u00f3rio"
+        "required": "Telefone é obrigatório"
       },
       "email": {
         "label": "E-mail",
         "placeholder": "contato@exemplo.com",
-        "invalid": "Digite um e-mail v\u00e1lido"
+        "invalid": "Digite um e-mail válido"
       },
       "city": {
         "label": "Cidade",
-        "placeholder": "S\u00e3o Paulo",
-        "required": "Cidade \u00e9 obrigat\u00f3ria"
+        "placeholder": "São Paulo",
+        "required": "Cidade é obrigatória"
       },
       "status": {
         "label": "Status",
         "placeholder": "Selecione o status",
         "active": "Ativo",
-        "trial": "Em avaliacao",
+        "trial": "Em avaliação",
         "inactive": "Inativo"
       }
     },
@@ -103,8 +151,8 @@
       "edit": "Editar"
     },
     "feedback": {
-      "submitError": "N\u00e3o foi poss\u00edvel criar o cliente. Tente novamente.",
-      "updateError": "N\u00e3o foi poss\u00edvel atualizar o cliente. Tente novamente."
+      "submitError": "Não foi possível criar o cliente. Tente novamente.",
+      "updateError": "Não foi possível atualizar o cliente. Tente novamente."
     }
   }
 }
