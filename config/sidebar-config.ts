@@ -46,7 +46,6 @@ export function useSidebarConfig() {
       icon: Store,
       items: [
         { title: tOrders("history"), url: "/orders" },
-        { title: tOrders("new"), url: "/orders/new" },
       ],
     },
     {
@@ -55,7 +54,6 @@ export function useSidebarConfig() {
       icon: Package,
       items: [
         { title: tProducts("list"), url: "/products" },
-        { title: tProducts("new"), url: "#" },
       ],
     },
     {
@@ -64,7 +62,6 @@ export function useSidebarConfig() {
       icon: Users,
       items: [
         { title: tCustomers("list"), url: "/customers" },
-        { title: tCustomers("new"), url: "#" },
       ],
     },
     {

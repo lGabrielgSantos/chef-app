@@ -25,7 +25,19 @@ export const useAuthStore = create<AuthState>()(
       logout: () => {
         localStorage.removeItem("token");
         localStorage.removeItem("refresh_token");
+
+        if (typeof document !== "undefined") {
+          document.cookie.split(";").forEach((c) => {
+            const eqPos = c.indexOf("=");
+            const name = (eqPos > -1 ? c.slice(0, eqPos) : c).trim();
+            if (name) {
+              document.cookie = `${name}=;expires=Thu, 01 Jan 1970 00:00:00 GMT;path=/`;
+            }
+          });
+        }
+
         set({ user: null, token: null });
+        window.location.href = "/login";
       },
     }),
     {
