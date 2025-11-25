@@ -32,7 +32,7 @@ export interface OrderDTO {
 export interface OrderItem {
   id: string
   orderId?: number | null
-  productId?: string | null
+  productId?: number | null
   quantity: number
 }
 
@@ -42,7 +42,7 @@ export interface OrderPayload {
   total?: number | null
   items?: Array<{
     id?: string
-    productId?: string | null
+    productId?: number | null
     quantity: number
   }>
 }
@@ -94,9 +94,9 @@ export function orderItemFromDto(payload: OrderItemDTO): OrderItem {
           : null,
     productId:
       payload.product_id !== undefined && payload.product_id !== null
-        ? String(payload.product_id)
+        ? toNumericOrNull(payload.product_id)
         : payload.productId !== undefined && payload.productId !== null
-          ? String(payload.productId)
+          ? toNumericOrNull(payload.productId)
           : null,
     quantity: toNumeric(payload.quantity),
   }

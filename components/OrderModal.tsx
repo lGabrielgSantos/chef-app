@@ -43,8 +43,8 @@ type Translator = (key: string, options?: { defaultMessage?: string }) => string
 
 const buildOrderSchema = (t: Translator) =>
   z.object({
-    customerId: z
-      .string({
+    customerId: z.coerce
+      .number({
         required_error: t("fields.customer.required"),
         invalid_type_error: t("fields.customer.required"),
       })
@@ -53,8 +53,8 @@ const buildOrderSchema = (t: Translator) =>
       .array(
         z.object({
           id: z.string().optional(),
-          productId: z
-            .string({
+          productId: z.coerce
+            .number({
               required_error: t("fields.product.required"),
               invalid_type_error: t("fields.product.required"),
             })
@@ -95,16 +95,16 @@ export function OrderModal({
   const [open, setOpen] = useState(false)
   const [submitError, setSubmitError] = useState<string | null>(null)
   const [itemError, setItemError] = useState<string | null>(null)
-  const [selectedProductId, setSelectedProductId] = useState("")
+  const [selectedProductId, setSelectedProductId] = useState<number | null>(null)
   const [selectedQuantity, setSelectedQuantity] = useState<number>(1)
 
   const initialValues = useMemo<OrderFormValues>(
     () => ({
-      customerId: order?.customerId ? String(order.customerId) : "",
+      customerId: order?.customerId ?? 0,
       items:
         order?.orderItems?.map((item) => ({
           id: item.id,
-          productId: item.productId ?? "",
+          productId: item.productId ?? 0,
           quantity: item.quantity ?? 1,
         })) ?? [],
     }),
@@ -122,7 +122,10 @@ export function OrderModal({
   })
 
   const productMap = useMemo(
-    () => new Map(products.map((product) => [product.id, product])),
+    () =>
+      new Map(
+        products.map((product) => [Number(product.id), product]),
+      ),
     [products],
   )
 
@@ -167,7 +170,7 @@ export function OrderModal({
       form.reset(initialValues)
       setSubmitError(null)
       setItemError(null)
-      setSelectedProductId("")
+      setSelectedProductId(null)
       setSelectedQuantity(1)
     }
   }
@@ -175,7 +178,7 @@ export function OrderModal({
   const handleAddItem = () => {
     setItemError(null)
 
-    if (!selectedProductId) {
+    if (!selectedProductId || selectedProductId < 1) {
       setItemError(t("fields.product.required"))
       return
     }
@@ -201,7 +204,7 @@ export function OrderModal({
       append({ productId: selectedProductId, quantity: selectedQuantity })
     }
 
-    setSelectedProductId("")
+    setSelectedProductId(null)
     setSelectedQuantity(1)
   }
 
@@ -214,7 +217,7 @@ export function OrderModal({
       total: orderTotal,
       items: values.items.map((item) => ({
         id: item.id,
-        productId: item.productId,
+        productId: item.productId ? Number(item.productId) : null,
         quantity: item.quantity,
       })),
     }
@@ -269,8 +272,8 @@ export function OrderModal({
                     <FormLabel>{t("fields.customer.label")}</FormLabel>
                     <FormControl>
                       <Select
-                        value={field.value}
-                        onValueChange={field.onChange}
+                        value={field.value ? String(field.value) : ""}
+                        onValueChange={(value) => field.onChange(Number(value))}
                         disabled={customersLoading}
                       >
                         <SelectTrigger className="w-full">
@@ -278,7 +281,7 @@ export function OrderModal({
                         </SelectTrigger>
                         <SelectContent align="start">
                           {customers.map((customer) => (
-                            <SelectItem key={customer.id} value={customer.id}>
+                            <SelectItem key={customer.id} value={String(customer.id)}>
                               {customer.name}
                             </SelectItem>
                           ))}
@@ -300,9 +303,9 @@ export function OrderModal({
                 <div className="space-y-2">
                   <FormLabel>{t("fields.product.label")}</FormLabel>
                   <Select
-                    value={selectedProductId}
+                    value={selectedProductId ? String(selectedProductId) : ""}
                     onValueChange={(value) => {
-                      setSelectedProductId(value)
+                      setSelectedProductId(Number(value))
                       setItemError(null)
                     }}
                     disabled={productsLoading}
@@ -312,7 +315,7 @@ export function OrderModal({
                     </SelectTrigger>
                     <SelectContent align="start">
                       {products.map((product) => (
-                        <SelectItem key={product.id} value={product.id}>
+                        <SelectItem key={product.id} value={String(product.id)}>
                           <div className="flex flex-col text-left">
                             <span className="font-medium text-foreground">
                               {product.name}
@@ -389,8 +392,8 @@ export function OrderModal({
                         </tr>
                       </thead>
                       <tbody>
-                        {fields.map((field, index) => {
-                          const product = productMap.get(field.productId ?? "")
+                      {fields.map((field, index) => {
+                          const product = productMap.get(field.productId ?? 0)
                           const unitPrice = product?.price ?? 0
                           const quantityValue =
                             form.watch(`items.${index}.quantity`) ??
