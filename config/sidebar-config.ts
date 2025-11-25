@@ -8,6 +8,7 @@ import {
   GalleryVerticalEnd,
   LayoutDashboardIcon,
   Map,
+  Package,
   PieChart,
   Settings2,
   Store,
@@ -18,6 +19,7 @@ export function useSidebarConfig() {
   const tMain = useTranslations("navigation.main");
   const tOrders = useTranslations("navigation.orders");
   const tSettings = useTranslations("navigation.settings");
+  const tProducts = useTranslations("navigation.products");
   const tCustomers = useTranslations("navigation.customers");
   const tDashboard = useTranslations("navigation.dashboard");
 
@@ -45,6 +47,15 @@ export function useSidebarConfig() {
       items: [
         { title: tOrders("history"), url: "/orders" },
         { title: tOrders("new"), url: "/orders/new" },
+      ],
+    },
+    {
+      title: tMain("products"),
+      url: "/products",
+      icon: Package,
+      items: [
+        { title: tProducts("list"), url: "/products" },
+        { title: tProducts("new"), url: "#" },
       ],
     },
     {

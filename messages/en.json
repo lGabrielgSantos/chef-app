@@ -23,6 +23,7 @@
     "main": {
       "dashboard": "Dashboard",
       "orders": "Orders",
+      "products": "Products",
       "customers": "Customers",
       "settings": "Settings"
     },
@@ -35,6 +36,10 @@
       "history": "History",
       "new": "New Order"
     },
+    "products": {
+      "new": "New Product",
+      "list": "Product List"
+    },
     "customers": {
       "new": "New Customer",
       "list": "Customer List"
@@ -44,6 +49,50 @@
       "team": "Team",
       "billing": "Billing",
       "limits": "Limits"
+    }
+  },
+  "productsPage": {
+    "title": "Products",
+    "description": "Manage your product catalog and pricing.",
+    "addProduct": "Add product",
+    "searchPlaceholder": "Search by name or description",
+    "loading": "Loading products...",
+    "error": "Could not load products. Please try again.",
+    "empty": "No products found."
+  },
+  "productsForm": {
+    "trigger": "Add product",
+    "title": "New product",
+    "editTitle": "Edit product",
+    "editDescription": "Update the product information.",
+    "description": "Fill in the details to register a new product.",
+    "fields": {
+      "name": {
+        "label": "Name",
+        "placeholder": "Product name",
+        "required": "Name is required"
+      },
+      "price": {
+        "label": "Price",
+        "placeholder": "0.00",
+        "required": "Price is required",
+        "min": "Price cannot be negative"
+      },
+      "description": {
+        "label": "Description",
+        "placeholder": "Short description",
+        "max": "Description must be at most 500 characters"
+      }
+    },
+    "actions": {
+      "cancel": "Cancel",
+      "create": "Create",
+      "save": "Save changes",
+      "edit": "Edit"
+    },
+    "feedback": {
+      "submitError": "Could not create the product. Please try again.",
+      "updateError": "Could not update the product. Please try again."
     }
   },
   "customersPage": {
