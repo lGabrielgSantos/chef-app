@@ -1,5 +1,5 @@
 "use client"
-
+//TODO: improve any types used in this file by importing proper types from dto files  
 import {
   useEffect,
   useMemo,
@@ -272,7 +272,7 @@ export function OrderModal({
           {modalTriggerLabel}
         </Button>
       </DialogTrigger>
-      <DialogContent>
+      <DialogContent className="w-[95vw] max-w-[95vw] sm:max-w-5xl">
         <DialogHeader>
           <DialogTitle>{dialogTitle}</DialogTitle>
           <DialogDescription>{dialogDescription}</DialogDescription>
