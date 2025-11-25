@@ -72,7 +72,7 @@ export default function OrdersPage() {
           )}
 
           <ScrollArea className="h-[90%] pr-1">
-            <div className="grid auto-rows-[1fr] gap-4 sm:grid-cols-2 xl:grid-cols-3">
+            <div className="grid auto-rows-[1fr] gap-4 sm:grid-cols-2 xl:grid-cols-5">
               {filteredOrders.map((order) => (
                 <OrderCard
                   key={order.id}
