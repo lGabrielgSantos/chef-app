@@ -57,7 +57,7 @@
     "addOrder": "Criar pedido",
     "searchPlaceholder": "Buscar por ID, cliente ou data",
     "loading": "Carregando pedidos...",
-    "error": "Nǜo foi poss��vel carregar os pedidos. Tente novamente.",
+    "error": "Não foi possível carregar os pedidos. Tente novamente.",
     "empty": "Nenhum pedido encontrado.",
     "card": {
       "id": "Pedido",
@@ -79,14 +79,14 @@
     "editDescription": "Atualize o cliente ou os itens deste pedido.",
     "description": "Selecione um cliente e adicione produtos para montar o pedido.",
     "sections": {
-      "customer": "Sele??o do cliente",
-      "product": "Sele??o de produto"
+      "customer": "Seleção do cliente",
+      "product": "Seleção de produto"
     },
     "fields": {
       "customer": {
         "label": "Cliente",
         "placeholder": "Selecione um cliente",
-        "required": "Cliente ? obrigat?rio"
+        "required": "Cliente é obrigatório"
       },
       "product": {
         "label": "Produto",
@@ -95,8 +95,8 @@
       },
       "quantity": {
         "label": "Quantidade",
-        "required": "Quantidade ? obrigat?ria",
-        "min": "Quantidade m?nima ? 1"
+        "required": "Quantidade é obrigatória",
+        "min": "Quantidade mínima é 1"
       },
       "items": {
         "label": "Itens adicionados",
@@ -106,7 +106,7 @@
         "table": {
           "product": "Produto",
           "qty": "Qtd",
-          "price": "Pre?o unit?rio",
+          "price": "Preço unitário",
           "total": "Total",
           "unknownProduct": "Produto"
         }

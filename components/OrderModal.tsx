@@ -1,5 +1,5 @@
 "use client"
-//TODO: improve any types used in this file by importing proper types from dto files  
+ 
 import {
   useEffect,
   useMemo,
