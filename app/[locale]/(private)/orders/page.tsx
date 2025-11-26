@@ -26,7 +26,6 @@ export default function OrdersPage() {
   const filteredOrders = useMemo(() => {
     const query = searchTerm.trim().toLowerCase()
     if (!query) return orders
-
     return orders.filter((order) =>
       [
         order.id,

@@ -95,8 +95,16 @@ export function OrderModal({
   const orderSchema = useMemo(() => buildOrderSchema(t), [t])
   const isEditMode = Boolean(order)
 
-  const { customers, loading: customersLoading } = useCustomers()
-  const { products, loading: productsLoading } = useProducts()
+  const {
+    customers,
+    loading: customersLoading,
+    loadCustomers,
+  } = useCustomers({ autoFetch: false })
+  const {
+    products,
+    loading: productsLoading,
+    loadProducts,
+  } = useProducts({ autoFetch: false })
   const productSelectRef = useRef<HTMLButtonElement | null>(null)
 
   const [open, setOpen] = useState(false)
@@ -174,6 +182,10 @@ export function OrderModal({
 
   const handleOpenChange = (nextOpen: boolean) => {
     setOpen(nextOpen)
+    if (nextOpen) {
+      void loadCustomers()
+      void loadProducts()
+    }
     if (!nextOpen) {
       form.reset(initialValues)
       setSubmitError(null)

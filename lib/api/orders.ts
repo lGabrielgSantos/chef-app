@@ -6,6 +6,36 @@ import {
   type OrderPayload,
 } from "@/lib/dto/order"
 
+type OrdersApiResponse = {
+  id: number
+  customer_id?: number | null
+  customer_name?: string | null
+  customers?: {
+    id: number
+    name: string
+    email: string
+    phone: string
+    city: string
+    created_at: string
+    updated_at: string
+    user_id: string
+  }
+  order_date?: string | null
+  created_at?: string | null
+  updated_at?: string | null
+  user_id?: string | null
+  total?: number | null
+  order_items_count?: number
+  order_items?: Array<{
+    id: number
+    order_id: number
+    product_id: number
+    quantity: number
+    created_at: string
+    updated_at: string
+  }>
+}
+
 function unwrapData<T>(responseData: unknown): T {
   const maybeEnvelope = responseData as { data?: unknown }
   const data = maybeEnvelope?.data
@@ -31,12 +61,31 @@ function normalizePayload(data: Partial<OrderPayload>) {
 
 export async function fetchOrders(): Promise<Order[]> {
   const response = await api.get("/orders")
-  const payload = unwrapData<OrderDTO[] | { orders: OrderDTO[] }>(
+  const payload = unwrapData<OrdersApiResponse[] | { orders: OrdersApiResponse[] }>(
     response.data,
   )
   const orders = Array.isArray(payload) ? payload : payload?.orders ?? []
 
-  return orders.map(orderFromDto)
+  const formattedOrders: OrderDTO[] = orders.map((order) => ({
+    id: order.id,
+    customer_id: order.customer_id ?? order.customers?.id ?? null,
+    order_date: order.order_date ?? null,
+    total: order.total ?? 0,
+    created_at: order.created_at ?? null,
+    updated_at: order.updated_at ?? null,
+    user_id: order.user_id ?? null,
+    order_items:
+      order.order_items?.map((item) => ({
+        id: item.id,
+        order_id: item.order_id,
+        product_id: item.product_id,
+        quantity: item.quantity,
+        created_at: item.created_at,
+        updated_at: item.updated_at,
+      })) ?? [],
+  }))
+
+  return formattedOrders.map(orderFromDto)
 }
 
 export async function fetchOrder(id: string): Promise<Order> {
