@@ -158,7 +158,7 @@ export function OrderModal({
     }
 
     return {
-      customerId: resolvedOrder?.customer_id ?? 0,
+      customerId: 0,
       notes: "",
       items: [],
     }
