@@ -5,9 +5,10 @@ import { useCallback, useEffect, useState } from "react"
 import {
   createOrder,
   deleteOrder,
-  fetchOrder,
+  fetchOrderById,
   fetchOrders,
   updateOrder,
+  type OrdersApiResponse,
 } from "@/lib/api/orders"
 import type { Order, OrderPayload } from "@/lib/dto/order"
 
@@ -16,20 +17,20 @@ interface UseOrdersOptions {
 }
 
 interface UseOrdersReturn {
-  orders: Order[]
+  orders: OrdersApiResponse[]
   loading: boolean
   error: Error | null
   loadOrders: () => Promise<void>
-  getOrderById: (id: string) => Promise<Order>
+  getOrderById: (id: number) => Promise<Order>
   addOrder: (data: OrderPayload) => Promise<Order>
-  editOrder: (id: string, data: Partial<OrderPayload>) => Promise<Order>
-  removeOrder: (id: string) => Promise<void>
+  editOrder: (id: number, data: Partial<OrderPayload>) => Promise<Order>
+  removeOrder: (id: number) => Promise<void>
 }
 
 export function useOrders(
   options: UseOrdersOptions = { autoFetch: true },
 ): UseOrdersReturn {
-  const [orders, setOrders] = useState<Order[]>([])
+  const [orders, setOrders] = useState<OrdersApiResponse[]>([])
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<Error | null>(null)
   const { autoFetch = true } = options
@@ -41,23 +42,28 @@ export function useOrders(
     return normalizedError
   }, [])
 
+  const refreshOrders = useCallback(async () => {
+    const data = await fetchOrders()
+    setOrders(data)
+    return data
+  }, [])
+
   const loadOrders = useCallback(async () => {
     setLoading(true)
     setError(null)
     try {
-      const data = await fetchOrders()
-      setOrders(data)
+      await refreshOrders()
     } catch (err) {
       handleError(err)
     } finally {
       setLoading(false)
     }
-  }, [handleError])
+  }, [handleError, refreshOrders])
 
   const getOrderById = useCallback(
-    async (id: string) => {
+    async (id: number) => {
       try {
-        return await fetchOrder(id)
+        return await fetchOrderById(id)
       } catch (err) {
         throw handleError(err)
       }
@@ -69,34 +75,32 @@ export function useOrders(
     async (data: OrderPayload) => {
       try {
         const created = await createOrder(data)
-        setOrders((prev) => [created, ...prev])
+        await refreshOrders()
         return created
       } catch (err) {
         throw handleError(err)
       }
     },
-    [handleError],
+    [handleError, refreshOrders],
   )
 
   const editOrder = useCallback(
-    async (id: string, data: Partial<OrderPayload>) => {
+    async (id: number, data: Partial<OrderPayload>) => {
       try {
-        const updated = await updateOrder(id, data)
-        setOrders((prev) =>
-          prev.map((order) => (order.id === id ? { ...order, ...updated } : order)),
-        )
+        const updated = await updateOrder(String(id), data)
+        await refreshOrders()
         return updated
       } catch (err) {
         throw handleError(err)
       }
     },
-    [handleError],
+    [handleError, refreshOrders],
   )
 
   const removeOrder = useCallback(
-    async (id: string) => {
+    async (id: number) => {
       try {
-        await deleteOrder(id)
+        await deleteOrder(String(id))
         setOrders((prev) => prev.filter((order) => order.id !== id))
       } catch (err) {
         throw handleError(err)

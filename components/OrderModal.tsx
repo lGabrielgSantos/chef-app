@@ -45,6 +45,7 @@ import type { Order, OrderPayload } from "@/lib/dto/order"
 import { useCustomers } from "@/lib/hooks/useCustomers"
 import { useProducts } from "@/lib/hooks/useProducts"
 import { cn } from "@/lib/utils"
+import { OrdersApiResponse } from "@/lib/api/orders"
 
 type Translator = (key: string, options?: { defaultMessage?: string }) => string
 
@@ -79,10 +80,11 @@ const buildOrderSchema = (t: Translator) =>
 type OrderFormValues = z.infer<ReturnType<typeof buildOrderSchema>>
 
 interface OrderModalProps {
-  onSubmit: (payload: OrderPayload, id?: string) => Promise<unknown>
+  onSubmit: (payload: OrderPayload, id?: number) => Promise<unknown>
   triggerLabel?: string
-  order?: Order
+  order?: OrdersApiResponse
   triggerButtonProps?: ComponentProps<typeof Button>
+  loadOrderById?: (id: number) => Promise<Order>
 }
 
 export function OrderModal({
@@ -90,6 +92,7 @@ export function OrderModal({
   triggerLabel,
   order,
   triggerButtonProps,
+  loadOrderById,
 }: OrderModalProps) {
   const t = useTranslations("ordersForm")
   const orderSchema = useMemo(() => buildOrderSchema(t), [t])
@@ -112,20 +115,54 @@ export function OrderModal({
   const [itemError, setItemError] = useState<string | null>(null)
   const [selectedProductId, setSelectedProductId] = useState<number | null>(null)
   const [selectedQuantity, setSelectedQuantity] = useState<number>(1)
+  const [detailedOrder, setDetailedOrder] = useState<Order | null>(null)
+  const [orderLoading, setOrderLoading] = useState(false)
 
-  const initialValues = useMemo<OrderFormValues>(
-    () => ({
-      customerId: order?.customerId ?? 0,
-      notes: order?.notes ?? "",
-      items:
-        order?.orderItems?.map((item) => ({
-          id: item.id,
-          productId: item.productId ?? 0,
-          quantity: item.quantity ?? 1,
-        })) ?? [],
-    }),
-    [order],
-  )
+  const resolvedOrder = detailedOrder ?? order ?? null
+
+  const initialValues = useMemo<OrderFormValues>(() => {
+    if (resolvedOrder && "orderItems" in resolvedOrder) {
+      return {
+        customerId: resolvedOrder.customerId ?? 0,
+        notes: resolvedOrder.notes ?? "",
+        items:
+          resolvedOrder.orderItems?.map((item) => ({
+            id: item.id,
+            productId: item.productId ?? 0,
+            quantity: item.quantity ?? 1,
+          })) ?? [],
+      }
+    }
+
+    if (resolvedOrder && "order_items" in (resolvedOrder as never)) {
+      const legacyOrder = resolvedOrder as unknown as {
+        customer_id?: number | null
+        notes?: string | null
+        order_items?: Array<{
+          id?: string
+          product_id?: number | null
+          quantity?: number | null
+        }>
+      }
+
+      return {
+        customerId: legacyOrder.customer_id ?? 0,
+        notes: legacyOrder.notes ?? "",
+        items:
+          legacyOrder.order_items?.map((item) => ({
+            id: item.id,
+            productId: item.product_id ?? 0,
+            quantity: item.quantity ?? 1,
+          })) ?? [],
+      }
+    }
+
+    return {
+      customerId: resolvedOrder?.customer_id ?? 0,
+      notes: "",
+      items: [],
+    }
+  }, [resolvedOrder])
 
   const form = useForm<OrderFormValues>({
     resolver: zodResolver(orderSchema),
@@ -185,6 +222,16 @@ export function OrderModal({
     if (nextOpen) {
       void loadCustomers()
       void loadProducts()
+      setSubmitError(null)
+      if (isEditMode && loadOrderById && order?.id) {
+        setOrderLoading(true)
+        void loadOrderById(order.id)
+          .then((fullOrder) => setDetailedOrder(fullOrder))
+          .catch(() => setSubmitError(t("feedback.loadError")))
+          .finally(() => setOrderLoading(false))
+      } else {
+        setDetailedOrder(null)
+      }
     }
     if (!nextOpen) {
       form.reset(initialValues)
@@ -192,6 +239,8 @@ export function OrderModal({
       setItemError(null)
       setSelectedProductId(null)
       setSelectedQuantity(1)
+      setDetailedOrder(null)
+      setOrderLoading(false)
     }
   }
 
@@ -230,10 +279,20 @@ export function OrderModal({
 
   const handleSubmit = async (values: OrderFormValues) => {
     setSubmitError(null)
+    const resolvedOrderDate =
+      resolvedOrder && "orderDate" in resolvedOrder
+        ? resolvedOrder.orderDate
+        : resolvedOrder && "order_date" in (resolvedOrder as never)
+          ? (resolvedOrder as OrdersApiResponse).order_date
+          : null
+    const numericOrderId =
+      resolvedOrder && "id" in resolvedOrder
+        ? Number(resolvedOrder.id)
+        : undefined
 
     const payload: OrderPayload = {
       customerId: Number(values.customerId) || null,
-      orderDate: order?.orderDate ?? null,
+      orderDate: resolvedOrderDate ?? null,
       total: orderTotal,
       items: values.items.map((item) => ({
         id: item.id,
@@ -243,7 +302,7 @@ export function OrderModal({
     }
 
     try {
-      await onSubmit(payload, order?.id)
+      await onSubmit(payload, numericOrderId)
       form.reset(initialValues)
       setOpen(false)
     } catch (_error) {
@@ -264,9 +323,9 @@ export function OrderModal({
   const dialogDescription = isEditMode
     ? t("editDescription")
     : t("description")
-  const orderIdLabel = order?.id ? `#${order.id}` : null
+  const orderIdLabel = resolvedOrder?.id ? `#${resolvedOrder.id}` : null
   const orderStatus =
-    (order as { status?: string | null } | undefined)?.status ?? null
+    (resolvedOrder as { status?: string | null } | null)?.status ?? null
 
   const handleTriggerProductSelect = () => {
     if (productSelectRef.current) {
@@ -585,12 +644,15 @@ export function OrderModal({
                 <Button
                   type="button"
                   variant="outline"
-                  disabled={form.formState.isSubmitting}
+                  disabled={form.formState.isSubmitting || orderLoading}
                 >
                   {t("actions.cancel")}
                 </Button>
               </DialogClose>
-              <Button type="submit" disabled={form.formState.isSubmitting}>
+              <Button
+                type="submit"
+                disabled={form.formState.isSubmitting || orderLoading}
+              >
                 {form.formState.isSubmitting && <Spinner className="mr-2" aria-hidden />}
                 {t(isEditMode ? "actions.save" : "actions.saveOrder")}
               </Button>

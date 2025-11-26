@@ -20,17 +20,19 @@ import { useOrders } from "@/lib/hooks/useOrders"
 export default function OrdersPage() {
   const t = useTranslations("ordersPage")
   const formT = useTranslations("ordersForm")
-  const { orders, loading, error, addOrder, editOrder } = useOrders()
+  const { orders, loading, error, addOrder, editOrder, getOrderById } = useOrders()
   const [searchTerm, setSearchTerm] = useState("")
 
   const filteredOrders = useMemo(() => {
     const query = searchTerm.trim().toLowerCase()
+    console.log("Filtering orders with query:", orders)
     if (!query) return orders
     return orders.filter((order) =>
       [
         order.id,
-        order.customerId,
-        order.orderDate,
+        order.customer_id,
+        order.customer_name,
+        order.order_date,
         order.total?.toString(),
       ]
         .filter(Boolean)
@@ -78,6 +80,7 @@ export default function OrdersPage() {
                   order={order}
                   t={t}
                   onEdit={editOrder}
+                  loadOrderById={getOrderById}
                   editLabel={formT("actions.edit")}
                 />
               ))}

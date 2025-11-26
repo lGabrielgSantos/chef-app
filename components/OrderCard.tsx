@@ -10,12 +10,14 @@ import {
   CardTitle,
 } from "./ui/card"
 import type { Order, OrderPayload } from "@/lib/dto/order"
+import { OrdersApiResponse } from "@/lib/api/orders"
 
 interface OrderCardProps {
-  order: Order
+  order: OrdersApiResponse
   t?: (key: string, options?: { defaultMessage?: string }) => string
-  onEdit?: (id: string, data: Partial<OrderPayload>) => Promise<unknown>
+  onEdit?: (id: number, data: Partial<OrderPayload>) => Promise<unknown>
   editLabel?: string
+  loadOrderById?: (id: number) => Promise<Order>
 }
 
 export default function OrderCard({
@@ -24,6 +26,7 @@ export default function OrderCard({
     options?.defaultMessage ?? key,
   onEdit,
   editLabel,
+  loadOrderById,
 }: OrderCardProps) {
   const formatCurrency = (value: number | null | undefined) =>
     new Intl.NumberFormat(undefined, {
@@ -33,13 +36,13 @@ export default function OrderCard({
       maximumFractionDigits: 2,
     }).format(value ?? 0)
 
-  const formattedDate = order.orderDate
-    ? new Date(order.orderDate).toLocaleDateString()
+  const formattedDate = order.order_date
+    ? new Date(order.order_date).toLocaleDateString()
     : t("card.noDate", { defaultMessage: "Date not set" })
 
-  const itemCount = order.orderItems?.length ?? 0
-  const customerLabel = order.customerId
-    ? `${t("card.customer", { defaultMessage: "Customer" })} #${order.customerId}`
+  const itemCount = order.order_items_count ?? 0
+  const customerLabel = order.customer_id
+    ? `${t("card.customer", { defaultMessage: "Customer" })} #${order.customer_name}`
     : t("card.noCustomer", { defaultMessage: "No customer linked" })
 
   return (
@@ -92,6 +95,7 @@ export default function OrderCard({
         {onEdit && (
           <OrderModal
             order={order}
+            loadOrderById={loadOrderById}
             onSubmit={(payload) => onEdit(order.id, payload)}
             triggerLabel={editLabel ?? t("actions.edit", { defaultMessage: "Edit" })}
             triggerButtonProps={{

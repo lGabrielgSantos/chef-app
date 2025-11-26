@@ -37,6 +37,17 @@ export interface OrderItem {
   quantity: number
 }
 
+ export type OrdersApiResponse = {
+  id: number
+  customer_id?: number | null
+  customer_name?: string | null
+  order_date?: string | null
+  created_at?: string | null
+  updated_at?: string | null
+  total?: number | null
+  order_items_count?: number
+}
+
 export interface OrderPayload {
   customerId?: number | null
   orderDate?: string | null

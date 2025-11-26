@@ -1,40 +1,11 @@
 import { api } from "./index"
 import {
   orderFromDto,
+  OrdersApiResponse,
   type Order,
   type OrderDTO,
   type OrderPayload,
 } from "@/lib/dto/order"
-
-type OrdersApiResponse = {
-  id: number
-  customer_id?: number | null
-  customer_name?: string | null
-  customers?: {
-    id: number
-    name: string
-    email: string
-    phone: string
-    city: string
-    created_at: string
-    updated_at: string
-    user_id: string
-  }
-  order_date?: string | null
-  created_at?: string | null
-  updated_at?: string | null
-  user_id?: string | null
-  total?: number | null
-  order_items_count?: number
-  order_items?: Array<{
-    id: number
-    order_id: number
-    product_id: number
-    quantity: number
-    created_at: string
-    updated_at: string
-  }>
-}
 
 function unwrapData<T>(responseData: unknown): T {
   const maybeEnvelope = responseData as { data?: unknown }
@@ -59,36 +30,16 @@ function normalizePayload(data: Partial<OrderPayload>) {
   }
 }
 
-export async function fetchOrders(): Promise<Order[]> {
+export async function fetchOrders(): Promise<OrdersApiResponse[]> {
   const response = await api.get("/orders")
   const payload = unwrapData<OrdersApiResponse[] | { orders: OrdersApiResponse[] }>(
     response.data,
   )
-  const orders = Array.isArray(payload) ? payload : payload?.orders ?? []
-
-  const formattedOrders: OrderDTO[] = orders.map((order) => ({
-    id: order.id,
-    customer_id: order.customer_id ?? order.customers?.id ?? null,
-    order_date: order.order_date ?? null,
-    total: order.total ?? 0,
-    created_at: order.created_at ?? null,
-    updated_at: order.updated_at ?? null,
-    user_id: order.user_id ?? null,
-    order_items:
-      order.order_items?.map((item) => ({
-        id: item.id,
-        order_id: item.order_id,
-        product_id: item.product_id,
-        quantity: item.quantity,
-        created_at: item.created_at,
-        updated_at: item.updated_at,
-      })) ?? [],
-  }))
-
-  return formattedOrders.map(orderFromDto)
+  console.log("Fetched orders payload:", payload)
+  return payload.orders ?? payload
 }
 
-export async function fetchOrder(id: string): Promise<Order> {
+export async function fetchOrderById(id: number): Promise<Order> {
   const response = await api.get(`/orders/${id}`)
   const payload = unwrapData<OrderDTO | { order: OrderDTO }>(response.data)
   const order = Array.isArray(payload)
@@ -96,6 +47,10 @@ export async function fetchOrder(id: string): Promise<Order> {
     : (payload as { order?: OrderDTO }).order ?? payload
 
   return orderFromDto(order)
+}
+
+export async function fetchOrder(id: string): Promise<Order> {
+  return fetchOrderById(Number(id))
 }
 
 export async function createOrder(data: OrderPayload): Promise<Order> {
@@ -119,4 +74,4 @@ export async function deleteOrder(id: string): Promise<void> {
   await api.delete(`/orders/${id}`)
 }
 
-export type { Order, OrderDTO, OrderPayload } from "@/lib/dto/order"
+export type { Order, OrderDTO, OrderPayload, OrdersApiResponse } from "@/lib/dto/order"

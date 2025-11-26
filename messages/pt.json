@@ -104,16 +104,17 @@
         "required": "Adicione pelo menos um item ao pedido.",
         "remove": "Remover",
         "table": {
+          "id": "ID",
           "product": "Produto",
           "qty": "Qtd",
           "price": "Preço unitário",
           "total": "Total",
           "unknownProduct": "Produto"
-        },
-        "notes": {
-          "label": "Notas do pedido",
-          "placeholder": "Instruções especiais ou observações"
         }
+      },
+      "notes": {
+        "label": "Notas do pedido",
+        "placeholder": "Instruções especiais ou observações"
       }
     },
     "summary": {
