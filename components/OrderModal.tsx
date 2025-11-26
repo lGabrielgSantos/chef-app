@@ -66,7 +66,7 @@ const buildOrderSchema = (t: Translator) =>
             .number({
               error: t("fields.product.required"),
             })
-            .min(1, t("fields.product.required")),
+            .min(0, t("fields.product.required")),
           quantity: z
             .number({
               error: t("fields.quantity.required")
@@ -247,7 +247,7 @@ export function OrderModal({
   const handleAddItem = () => {
     setItemError(null)
 
-    if (!selectedProductId || selectedProductId < 1) {
+    if (selectedProductId === null || Number.isNaN(selectedProductId)) {
       setItemError(t("fields.product.required"))
       return
     }
@@ -297,7 +297,10 @@ export function OrderModal({
       notes: values.notes?.trim() || null,
       items: values.items.map((item) => ({
         id: item.id,
-        productId: item.productId ? Number(item.productId) : null,
+        productId:
+          item.productId === null || Number.isNaN(item.productId)
+            ? null
+            : Number(item.productId),
         quantity: item.quantity,
       })),
     }
@@ -454,7 +457,11 @@ export function OrderModal({
                     <div className="space-y-2">
                       <FormLabel>{t("fields.product.label")}</FormLabel>
                       <Select
-                        value={selectedProductId ? String(selectedProductId) : ""}
+                        value={
+                          selectedProductId === null
+                            ? ""
+                            : String(selectedProductId)
+                        }
                         onValueChange={(value) => {
                           setSelectedProductId(Number(value))
                           setItemError(null)
