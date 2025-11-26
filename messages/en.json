@@ -68,7 +68,6 @@
       "noDate": "Date not set",
       "total": "Total",
       "summary": "Items",
-      "itemSummary": "{count} items",
       "emptyItems": "No items"
     }
   },

@@ -61,14 +61,14 @@
     "empty": "Nenhum pedido encontrado.",
     "card": {
       "id": "Pedido",
-      "items": "itens",
+      "items": "items",
       "customer": "Cliente",
       "noCustomer": "Sem cliente vinculado",
       "date": "Data do pedido",
-      "noDate": "Data nǜo definida",
+      "noDate": "Data não definida",
       "total": "Total",
-      "summary": "Itens",
-      "itemSummary": "{count} itens",
+      "summary": "items",
+      "itemSummary": " items",
       "emptyItems": "Nenhum item"
     }
   },
@@ -123,7 +123,7 @@
     "actions": {
       "cancel": "Cancelar",
       "saveOrder": "Salvar pedido",
-      "save": "Salvar altera??es",
+      "save": "Salvar alterações",
       "edit": "Editar",
       "addItem": "Adicionar item"
     },
