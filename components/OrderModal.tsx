@@ -1,5 +1,5 @@
 "use client"
- 
+
 import {
   useEffect,
   useMemo,
@@ -50,19 +50,26 @@ type Translator = (key: string, options?: { defaultMessage?: string }) => string
 
 const buildOrderSchema = (t: Translator) =>
   z.object({
-    customerId: z.coerce
-      .number({ message: t("fields.customer.required") })
+    customerId: z
+      .number({
+
+        error: t("fields.customer.required")
+      })
       .min(1, t("fields.customer.required")),
     notes: z.string().optional(),
     items: z
       .array(
         z.object({
           id: z.string().optional(),
-          productId: z.coerce
-            .number({ message: t("fields.product.required") })
+          productId: z
+            .number({
+              error: t("fields.product.required"),
+            })
             .min(1, t("fields.product.required")),
-          quantity: z.coerce
-            .number({ message: t("fields.quantity.required") })
+          quantity: z
+            .number({
+              error: t("fields.quantity.required")
+            })
             .min(1, t("fields.quantity.min")),
         }),
       )
@@ -468,7 +475,7 @@ export function OrderModal({
                           </tr>
                         </thead>
                         <tbody>
-                        {fields.map((field, index) => {
+                          {fields.map((field, index) => {
                             const product = productMap.get(field.productId ?? 0)
                             const unitPrice = product?.price ?? 0
                             const quantityValue =

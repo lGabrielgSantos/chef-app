@@ -84,8 +84,7 @@ export default function OrderCard({
             <span className="font-medium text-foreground">
               {itemCount > 0
                 ? t("card.itemSummary", {
-                    defaultMessage: "{count} item(s)",
-                    count: itemCount,
+                    defaultMessage: "{count} item(s)"
                   })
                 : t("card.emptyItems", { defaultMessage: "No items" })}
             </span>
