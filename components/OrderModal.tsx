@@ -51,10 +51,7 @@ type Translator = (key: string, options?: { defaultMessage?: string }) => string
 const buildOrderSchema = (t: Translator) =>
   z.object({
     customerId: z.coerce
-      .number({
-        required_error: t("fields.customer.required"),
-        invalid_type_error: t("fields.customer.required"),
-      })
+      .number({ message: t("fields.customer.required") })
       .min(1, t("fields.customer.required")),
     notes: z.string().optional(),
     items: z
@@ -62,16 +59,10 @@ const buildOrderSchema = (t: Translator) =>
         z.object({
           id: z.string().optional(),
           productId: z.coerce
-            .number({
-              required_error: t("fields.product.required"),
-              invalid_type_error: t("fields.product.required"),
-            })
+            .number({ message: t("fields.product.required") })
             .min(1, t("fields.product.required")),
           quantity: z.coerce
-            .number({
-              invalid_type_error: t("fields.quantity.required"),
-              required_error: t("fields.quantity.required"),
-            })
+            .number({ message: t("fields.quantity.required") })
             .min(1, t("fields.quantity.min")),
         }),
       )
@@ -110,7 +101,7 @@ export function OrderModal({
   const initialValues = useMemo<OrderFormValues>(
     () => ({
       customerId: order?.customerId ?? 0,
-      notes: (order as any)?.notes ?? "",
+      notes: order?.notes ?? "",
       items:
         order?.orderItems?.map((item) => ({
           id: item.id,

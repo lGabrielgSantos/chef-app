@@ -109,11 +109,16 @@
           "price": "Unit price",
           "total": "Total",
           "unknownProduct": "Product"
+        },
+        "notes": {
+          "label": "Order notes",
+          "placeholder": "Special instructions or remarks"
         }
       }
     },
     "summary": {
-      "total": "Order total"
+      "total": "Order total",
+      "subtotal": "Subtotal"
     },
     "actions": {
       "cancel": "Cancel",

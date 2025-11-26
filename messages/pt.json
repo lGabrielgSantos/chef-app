@@ -109,11 +109,16 @@
           "price": "Preço unitário",
           "total": "Total",
           "unknownProduct": "Produto"
+        },
+        "notes": {
+          "label": "Notas do pedido",
+          "placeholder": "Instruções especiais ou observações"
         }
       }
     },
     "summary": {
-      "total": "Total do pedido"
+      "total": "Total do pedido",
+      "subtotal": "Subtotal"
     },
     "actions": {
       "cancel": "Cancelar",
@@ -123,8 +128,8 @@
       "addItem": "Adicionar item"
     },
     "feedback": {
-      "submitError": "N?o foi poss?vel criar o pedido. Tente novamente.",
-      "updateError": "N?o foi poss?vel atualizar o pedido. Tente novamente."
+      "submitError": "Não foi possível criar o pedido. Tente novamente.",
+      "updateError": "Não foi possível atualizar o pedido. Tente novamente."
     }
   },
   "productsPage": {

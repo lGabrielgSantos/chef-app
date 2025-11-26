@@ -20,6 +20,7 @@ export interface OrderDTO {
   order_date?: string | null
   orderDate?: string | null
   total?: string | number | null
+  notes?: string | null
   created_at?: string | null
   updated_at?: string | null
   createdAt?: string | null
@@ -40,6 +41,7 @@ export interface OrderPayload {
   customerId?: number | null
   orderDate?: string | null
   total?: number | null
+  notes?: string | null
   items?: Array<{
     id?: string
     productId?: number | null
@@ -119,6 +121,7 @@ export function orderFromDto(payload: OrderDTO): Order {
           : null,
     orderDate: payload.order_date ?? payload.orderDate ?? null,
     total: toNumeric(payload.total),
+    notes: payload.notes ?? null,
     createdAt: payload.created_at ?? payload.createdAt ?? null,
     updatedAt: payload.updated_at ?? payload.updatedAt ?? null,
     orderItems: items.map(orderItemFromDto),

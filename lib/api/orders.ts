@@ -6,17 +6,21 @@ import {
   type OrderPayload,
 } from "@/lib/dto/order"
 
-function unwrapData<T>(responseData: any): T {
-  return (responseData?.data ?? responseData) as T
+function unwrapData<T>(responseData: unknown): T {
+  const maybeEnvelope = responseData as { data?: unknown }
+  const data = maybeEnvelope?.data
+  return (data ?? responseData) as T
 }
 
 function normalizePayload(data: Partial<OrderPayload>) {
-  const items = (data.items ?? (data as any).orderItems) ?? []
+  const legacyItems = (data as { orderItems?: OrderPayload["items"] }).orderItems
+  const items = data.items ?? legacyItems ?? []
 
   return {
     customer_id: data.customerId ?? null,
     order_date: data.orderDate ?? null,
     total: data.total ?? 0,
+    notes: data.notes ?? null,
     order_items: items.map((item) => ({
       id: item.id,
       product_id: item.productId,

@@ -6,8 +6,10 @@ import {
   type ProductPayload,
 } from "@/lib/dto/product";
 
-function unwrapData<T>(responseData: any): T {
-  return (responseData?.data ?? responseData) as T;
+function unwrapData<T>(responseData: unknown): T {
+  const maybeEnvelope = responseData as { data?: unknown };
+  const data = maybeEnvelope?.data;
+  return (data ?? responseData) as T;
 }
 
 export async function fetchProducts(): Promise<Product[]> {
