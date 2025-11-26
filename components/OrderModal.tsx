@@ -40,6 +40,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "./ui/select"
+import { Skeleton } from "./ui/skeleton"
 import { Textarea } from "./ui/textarea"
 import type { Order, OrderPayload } from "@/lib/dto/order"
 import { useCustomers } from "@/lib/hooks/useCustomers"
@@ -353,12 +354,15 @@ export function OrderModal({
 
         <Form {...form}>
           <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-6">
-            <div className="grid gap-6 md:grid-cols-[0.22fr_1fr]">
-              <section className="space-y-4 rounded-lg border bg-muted/50 p-4">
-                <div className="space-y-1">
-                  <p className="text-sm font-semibold text-foreground">
-                    {t("sections.customer")}
-                  </p>
+            {orderLoading ? (
+              <OrderModalSkeleton />
+            ) : (
+              <div className="grid gap-6 md:grid-cols-[0.22fr_1fr]">
+                <section className="space-y-4 rounded-lg border bg-muted/50 p-4">
+                  <div className="space-y-1">
+                    <p className="text-sm font-semibold text-foreground">
+                      {t("sections.customer")}
+                    </p>
                   <p className="text-xs text-muted-foreground">
                     {t("fields.customer.placeholder")}
                   </p>
@@ -639,7 +643,8 @@ export function OrderModal({
                   </div>
                 </div>
               </section>
-            </div>
+              </div>
+            )}
 
             {submitError && (
               <p className="text-sm text-destructive" role="alert">
@@ -669,6 +674,83 @@ export function OrderModal({
         </Form>
       </DialogContent>
     </Dialog>
+  )
+}
+
+function OrderModalSkeleton() {
+  return (
+    <div className="grid gap-6 md:grid-cols-[0.22fr_1fr]">
+      <section className="space-y-4 rounded-lg border bg-muted/50 p-4">
+        <div className="space-y-2">
+          <Skeleton className="h-4 w-32" aria-hidden />
+          <Skeleton className="h-3 w-40" aria-hidden />
+        </div>
+
+        <div className="space-y-3">
+          <div className="space-y-2">
+            <Skeleton className="h-4 w-24" aria-hidden />
+            <Skeleton className="h-10 w-full" aria-hidden />
+          </div>
+          <div className="space-y-2">
+            <Skeleton className="h-4 w-28" aria-hidden />
+            <Skeleton className="h-24 w-full" aria-hidden />
+          </div>
+        </div>
+
+        <div className="space-y-2 text-sm">
+          <Skeleton className="h-10 w-full" aria-hidden />
+          <Skeleton className="h-10 w-full" aria-hidden />
+        </div>
+      </section>
+
+      <section className="space-y-4 rounded-lg border p-4">
+        <Skeleton className="h-11 w-full" aria-hidden />
+
+        <div className="grid gap-3 sm:grid-cols-[2fr_auto_auto_auto] sm:items-end">
+          <div className="space-y-2">
+            <Skeleton className="h-4 w-28" aria-hidden />
+            <Skeleton className="h-10 w-full" aria-hidden />
+          </div>
+
+          <div className="space-y-2">
+            <Skeleton className="h-4 w-20" aria-hidden />
+            <Skeleton className="h-10 w-24" aria-hidden />
+          </div>
+
+          <Skeleton className="h-10 w-full sm:w-28" aria-hidden />
+        </div>
+
+        <div className="space-y-3">
+          <Skeleton className="h-4 w-28" aria-hidden />
+          <div className="overflow-hidden rounded-md border">
+            <div className="divide-y">
+              {[0, 1, 2].map((key) => (
+                <div
+                  key={key}
+                  className="grid grid-cols-[2fr_1fr_1fr_1fr] gap-3 px-3 py-3 text-sm"
+                >
+                  <Skeleton className="h-4 w-full" aria-hidden />
+                  <Skeleton className="h-4 w-full" aria-hidden />
+                  <Skeleton className="h-4 w-full" aria-hidden />
+                  <Skeleton className="h-4 w-full" aria-hidden />
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+
+        <div className="rounded-lg border bg-muted/50 p-4 space-y-3">
+          <div className="flex items-center justify-between">
+            <Skeleton className="h-4 w-24" aria-hidden />
+            <Skeleton className="h-4 w-16" aria-hidden />
+          </div>
+          <div className="flex items-center justify-between">
+            <Skeleton className="h-4 w-20" aria-hidden />
+            <Skeleton className="h-5 w-20" aria-hidden />
+          </div>
+        </div>
+      </section>
+    </div>
   )
 }
 
