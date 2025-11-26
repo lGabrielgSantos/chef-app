@@ -294,6 +294,7 @@ export function OrderModal({
       customerId: Number(values.customerId) || null,
       orderDate: resolvedOrderDate ?? null,
       total: orderTotal,
+      notes: values.notes?.trim() || null,
       items: values.items.map((item) => ({
         id: item.id,
         productId: item.productId ? Number(item.productId) : null,
