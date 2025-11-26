@@ -51,6 +51,88 @@
       "limits": "Limites"
     }
   },
+  "ordersPage": {
+    "title": "Pedidos",
+    "description": "Acompanhe pedidos de clientes, totais e prazos.",
+    "addOrder": "Criar pedido",
+    "searchPlaceholder": "Buscar por ID, cliente ou data",
+    "loading": "Carregando pedidos...",
+    "error": "Não foi possível carregar os pedidos. Tente novamente.",
+    "empty": "Nenhum pedido encontrado.",
+    "card": {
+      "id": "Pedido",
+      "items": "items",
+      "customer": "Cliente",
+      "noCustomer": "Sem cliente vinculado",
+      "date": "Data do pedido",
+      "noDate": "Data não definida",
+      "total": "Total",
+      "summary": "items",
+      "itemSummary": " items",
+      "emptyItems": "Nenhum item"
+    }
+  },
+  "ordersForm": {
+    "trigger": "Novo pedido",
+    "title": "Novo pedido",
+    "editTitle": "Editar pedido",
+    "editDescription": "Atualize o cliente ou os itens deste pedido.",
+    "description": "Selecione um cliente e adicione produtos para montar o pedido.",
+    "sections": {
+      "customer": "Seleção do cliente",
+      "product": "Seleção de produto"
+    },
+    "fields": {
+      "customer": {
+        "label": "Cliente",
+        "placeholder": "Selecione um cliente",
+        "required": "Cliente é obrigatório"
+      },
+      "product": {
+        "label": "Produto",
+        "placeholder": "Selecione um produto",
+        "required": "Selecione um produto para adicionar"
+      },
+      "quantity": {
+        "label": "Quantidade",
+        "required": "Quantidade é obrigatória",
+        "min": "Quantidade mínima é 1"
+      },
+      "items": {
+        "label": "Itens adicionados",
+        "empty": "Nenhum item adicionado ainda.",
+        "required": "Adicione pelo menos um item ao pedido.",
+        "remove": "Remover",
+        "table": {
+          "id": "ID",
+          "product": "Produto",
+          "qty": "Qtd",
+          "price": "Preço unitário",
+          "total": "Total",
+          "unknownProduct": "Produto"
+        }
+      },
+      "notes": {
+        "label": "Notas do pedido",
+        "placeholder": "Instruções especiais ou observações"
+      }
+    },
+    "summary": {
+      "total": "Total do pedido",
+      "subtotal": "Subtotal"
+    },
+    "actions": {
+      "cancel": "Cancelar",
+      "saveOrder": "Salvar pedido",
+      "save": "Salvar alterações",
+      "edit": "Editar",
+      "addItem": "Adicionar item"
+    },
+    "feedback": {
+      "submitError": "Não foi possível criar o pedido. Tente novamente.",
+      "updateError": "Não foi possível atualizar o pedido. Tente novamente."
+    }
+  },
   "productsPage": {
     "title": "Produtos",
     "description": "Gerencie seu catálogo de produtos e preços.",

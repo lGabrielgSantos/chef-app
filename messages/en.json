@@ -51,6 +51,86 @@
       "limits": "Limits"
     }
   },
+  "ordersPage": {
+    "title": "Orders",
+    "description": "Track customer orders, totals and delivery expectations.",
+    "addOrder": "Create order",
+    "searchPlaceholder": "Search by order ID, customer or date",
+    "loading": "Loading orders...",
+    "error": "Could not load orders. Please try again.",
+    "empty": "No orders found.",
+    "card": {
+      "id": "Order",
+      "items": "items",
+      "customer": "Customer",
+      "noCustomer": "No customer linked",
+      "date": "Order date",
+      "noDate": "Date not set",
+      "total": "Total",
+      "summary": "Items",
+      "emptyItems": "No items"
+    }
+  },
+  "ordersForm": {
+    "trigger": "New order",
+    "title": "New order",
+    "editTitle": "Edit order",
+    "editDescription": "Update the customer or items for this order.",
+    "description": "Select a customer and add products to build the order.",
+    "sections": {
+      "customer": "Customer selection",
+      "product": "Product selection"
+    },
+    "fields": {
+      "customer": {
+        "label": "Customer",
+        "placeholder": "Select a customer",
+        "required": "Customer is required"
+      },
+      "product": {
+        "label": "Product",
+        "placeholder": "Select a product",
+        "required": "Select a product to add"
+      },
+      "quantity": {
+        "label": "Quantity",
+        "required": "Quantity is required",
+        "min": "Quantity must be at least 1"
+      },
+      "items": {
+        "label": "Items added",
+        "empty": "No items added yet.",
+        "required": "Add at least one item to the order.",
+        "remove": "Remove",
+        "table": {
+          "product": "Product",
+          "qty": "Qty",
+          "price": "Unit price",
+          "total": "Total",
+          "unknownProduct": "Product"
+        },
+        "notes": {
+          "label": "Order notes",
+          "placeholder": "Special instructions or remarks"
+        }
+      }
+    },
+    "summary": {
+      "total": "Order total",
+      "subtotal": "Subtotal"
+    },
+    "actions": {
+      "cancel": "Cancel",
+      "saveOrder": "Save order",
+      "save": "Save changes",
+      "edit": "Edit",
+      "addItem": "Add item"
+    },
+    "feedback": {
+      "submitError": "Could not create the order. Please try again.",
+      "updateError": "Could not update the order. Please try again."
+    }
+  },
   "productsPage": {
     "title": "Products",
     "description": "Manage your product catalog and pricing.",
