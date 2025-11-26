@@ -24,10 +24,13 @@ export default function OrdersPage() {
   const [searchTerm, setSearchTerm] = useState("")
 
   const filteredOrders = useMemo(() => {
+    const statusZeroOrders = orders.filter(
+      (order) =>
+        order.status !== undefined && order.status !== null && Number(order.status) === 0,
+    )
     const query = searchTerm.trim().toLowerCase()
-    console.log("Filtering orders with query:", orders)
-    if (!query) return orders
-    return orders.filter((order) =>
+    if (!query) return statusZeroOrders
+    return statusZeroOrders.filter((order) =>
       [
         order.id,
         order.customer_id,
